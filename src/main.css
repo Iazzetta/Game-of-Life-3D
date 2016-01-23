@@ -174,7 +174,7 @@ html, body {
 .mdl-radio{
     margin-right: 40px;
 }
-.start_condition_label{
+.select_info{
     display: block;
     margin-bottom: 10px;
 }
@@ -184,4 +184,7 @@ html, body {
     font-size: 30px;
     margin-top: -4px;
     color: white;
+}
+.selects_wrapper{
+    margin-bottom: 25px;
 }

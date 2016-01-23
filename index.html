@@ -69,8 +69,19 @@
             <span id="span_x">x</span>
             <input class="field_size_input" id="field_size_y" placeholder="Y" value="30">
         </div>
-        <div class="start_condition_wrapper">
-            <label class="start_condition_label">Select a Starting Condition</label>
+        <div class="selects_wrapper"> 
+            <label class="select_info">Cells are represented by</label>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="box_option">
+                <input type="radio" id="box_option" class="mdl-radio__button" name="shape_option" value="1" checked>
+                <span class="mdl-radio__label">Boxes</span>
+            </label>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="sphere_option">
+                <input type="radio" id="sphere_option" class="mdl-radio__button" name="shape_option" value="2">
+                <span class="mdl-radio__label">Spheres</span>
+            </label>
+        </div>
+        <div class="selects_wrapper">
+            <label class="select_info">Select a Starting Condition</label>
             <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="random_option">
                 <input type="radio" id="random_option" class="mdl-radio__button" name="start_condition_options" value="1" checked>
                 <span class="mdl-radio__label">Random distribution</span>
@@ -79,10 +90,10 @@
                 <input type="radio" id="chose_option" class="mdl-radio__button" name="start_condition_options" value="2">
                 <span class="mdl-radio__label">I want to select by Hand</span>
             </label>
-            <button id="begin_btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-                Start Game
-            </button>
         </div>
+        <button id="begin_btn" class="mdl-button mdl-js-button mdl-button--raised">
+            Start Game
+        </button>
     </div>
     
     <canvas id="renderCanvas"></canvas>

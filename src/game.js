@@ -29,7 +29,6 @@ Game.prototype.init = function(){
     //this.engine.displayLoadingUI();
 	this.scene = new BABYLON.Scene(this.engine);
     this.scene.clearColor = new BABYLON.Color3(0.09, 0.09, 0.09);
-    this.sps = new BABYLON.SolidParticleSystem("SPS", this.scene, {isPickable: true});
      
     this.createCamera();
     this.createLight();
@@ -56,7 +55,7 @@ Game.prototype.pause = function(){
 }
 Game.prototype.restart = function(){
     this.paused = true;
-    this.roundcounter = 1;
+    this.roundCounter = 1;
     this.board.reset();
     $("#start_screen").fadeIn();
 }
@@ -75,8 +74,7 @@ Game.prototype.createCamera = function(){
 } 
 Game.prototype.loadWorld = function(){
     var sizeX = $("#field_size_x").val();
-    var sizeY = $("#field_size_y").val();
-    console.log(sizeX + " " + sizeY);
+    var sizeY = $("#field_size_y").val(); 
     this.board.setSize(sizeX, sizeY);
     this.board.createBoard();
 }
