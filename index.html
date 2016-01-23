@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+        
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/images/favIcons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/images/favIcons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/images/favIcons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/images/favIcons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/images/favIcons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/images/favIcons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/images/favIcons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/images/favIcons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favIcons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="assets/images/favIcons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favIcons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/images/favIcons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favIcons/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/favIcons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/images/favIcons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+
+	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <title>The Game of Life 3D</title>
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="libs/material.css">
+	<link rel="stylesheet" href="src/main.css">
+</head> 
+<body>
+	<div id="open_sidemenu" class="material-icons">menu</div>
+	<div id="menu_wrapper" class="mdl-shadow--4dp"> 
+		<div class="mdl-shadow--2dp menu_filler"><div class="menu_header"><i class="material-icons">settings</i><div class="text">Settings</div></div></div>
+		<div id="close_sidemenu" class="material-icons">cancel</div>
+		
+		<div class="menu_section">
+			<div class="field_description" id="roundCounter">Round Nr.: <span>1</span></div>
+		</div>
+		
+		<div class="menu_section"> 
+			<div class="field_description">Time Interval</div>
+			<input id="time_inverval" class="mdl-slider mdl-js-slider" type="range" min="1" max="10" value="5" tabindex="0">
+		</div> 
+        
+        <div id="pause_btn" class="menu_section"> 
+            <i class="material-icons btn_icons">pause_circle_outline</i>
+            Pause
+		</div>
+        
+        <div id="resume_btn" class="menu_section"> 
+            <i class="material-icons btn_icons">play_circle_outline</i>
+            Resume
+		</div>
+        
+        <div id="restart_btn" class="menu_section"> 
+            <i class="material-icons btn_icons">autorenew</i>
+            Restart
+		</div>
+        
+	</div>
+	
+    <div id="start_screen">
+        <img src="assets/images/header.png" id="header_img"/>
+        <div class="field_size_wrapper">
+            <label class="field_size_label">Chose Field Size</label>
+            <input class="field_size_input" id="field_size_x" placeholder="X" value="30">
+            <span id="span_x">x</span>
+            <input class="field_size_input" id="field_size_y" placeholder="Y" value="30">
+        </div>
+        <div class="start_condition_wrapper">
+            <label class="start_condition_label">Select a Starting Condition</label>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="random_option">
+                <input type="radio" id="random_option" class="mdl-radio__button" name="start_condition_options" value="1" checked>
+                <span class="mdl-radio__label">Random distribution</span>
+            </label>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="chose_option">
+                <input type="radio" id="chose_option" class="mdl-radio__button" name="start_condition_options" value="2">
+                <span class="mdl-radio__label">I want to select by Hand</span>
+            </label>
+            <button id="begin_btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                Start Game
+            </button>
+        </div>
+    </div>
+    
+    <canvas id="renderCanvas"></canvas>
+
+</body>
+
+<script src="libs/material.min.js"></script> 
+<script src="libs/hand.js"></script>
+<script src="libs/babylon.2.2.min.js"></script>
+<script src="libs/jquery-1.11.3.min.js"></script>
+
+<script src="src/main.js"></script>
+<script src="src/game.js"></script>
+<script src="src/board.js"></script>  
+<script src="src/cell.js"></script> 
+<script src="src/sounds.js"></script> 
+
+</html>
