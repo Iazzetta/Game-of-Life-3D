@@ -41,8 +41,8 @@ Game.prototype.init = function(){
         _this.startRenderLoop();
     });
 } 
-Game.prototype.begin = function(){
-    this.loadWorld();
+Game.prototype.begin = function(shape){
+    this.loadWorld(shape);
     $("#start_screen").fadeOut();
     this.paused = false;
 
@@ -72,11 +72,11 @@ Game.prototype.createCamera = function(){
     this.camera.setPosition(new BABYLON.Vector3(70, 185, -100));
     this.camera.attachControl(this.canvas, false); 
 } 
-Game.prototype.loadWorld = function(){
+Game.prototype.loadWorld = function(shape){
     var sizeX = $("#field_size_x").val();
     var sizeY = $("#field_size_y").val(); 
     this.board.setSize(sizeX, sizeY);
-    this.board.createBoard();
+    this.board.createBoard(shape);
 }
 Game.prototype.createLight = function(){
     this.light = new BABYLON.HemisphericLight('lightHs',new BABYLON.Vector3(0, 1, 0), this.scene); 

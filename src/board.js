@@ -12,7 +12,6 @@ function Board(a_game){
     this.cells = [];
     this.allMesh;
     this.sps;
-    this.type;
 }
 
 Board.prototype.setSize = function(a_sizeX, a_sizeY){
@@ -20,10 +19,11 @@ Board.prototype.setSize = function(a_sizeX, a_sizeY){
     this.sizeY = a_sizeY;
     this.totalSize = this.sizeX * this.sizeY;
 }
-Board.prototype.createBoard = function(){
+Board.prototype.createBoard = function(shape){
+    
     this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene, {isPickable: true});
     var cellObj;
-    if(this.type == "sphere")
+    if(shape == "spheres")
         cellObj = BABYLON.MeshBuilder.CreateSphere("s", { segments: 3 ,diameterX: 4,diameterY: 4, diameterZ: 4}, this.game.scene);
     else
         cellObj =  BABYLON.MeshBuilder.CreateBox("b", {size: 3}, this.game.scene);   

@@ -8,11 +8,13 @@ $("#resume_btn").click(function(){
     game.unPause();
     $(this).hide();
     $("#pause_btn").show();
+    $("#game_paused").fadeOut("fast");
 });
 $("#pause_btn").click(function(){
     game.pause();
     $(this).hide();
     $("#resume_btn").show(); 
+    $("#game_paused").fadeIn("fast");
 });
 $("#restart_btn").click(function(){
     game.restart();
@@ -20,7 +22,13 @@ $("#restart_btn").click(function(){
     sidemenu.hideToggler();
 });
 $("#begin_btn").click(function(){
-    game.begin(); 
+    var shape;
+    if($("#box_option").prop("checked"))
+        shape = "boxes";
+    else
+        shape = "spheres";
+        
+    game.begin(shape); 
     sidemenu.showToggler();
 });
 

@@ -188,3 +188,12 @@ html, body {
 .selects_wrapper{
     margin-bottom: 25px;
 }
+#game_paused{
+    color: white;
+    position: fixed;
+    bottom: 35px;
+    width: 200px;
+    width: 100%;
+    text-align: center;
+    display: none;
+}
