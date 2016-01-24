@@ -51,6 +51,7 @@ Game.prototype.begin = function(shape, dist){
     if(dist == "random"){
         this.paused = false;
         sidemenu.showToggler();
+        this.sounds.start(); 
     }
     else{
         this.board.startSelection();
@@ -62,6 +63,7 @@ Game.prototype.selectDone = function(){
     $("#select_info").hide();
     this.paused = false;
     this.board.endSelection();
+    this.sounds.start();
 }
 Game.prototype.unPause = function(){
     this.paused = false;
@@ -74,6 +76,7 @@ Game.prototype.restart = function(){
     this.roundCounter = 1;
     this.board.reset();
     $("#start_screen").fadeIn();
+    this.sounds.menu();
 }
 
 Game.prototype.registerEventListener = function(){
@@ -97,15 +100,15 @@ Game.prototype.startRenderLoop = function(){
     //this.engine.hideLoadingUI();
 	this.engine.runRenderLoop(function(){
 		_this.scene.render();
-        var timeInterval = $("#time_inverval").val() / 10;
-        //Next round about every second
+        var timeInterval = $("#time_inverval").val() / 50;
         time += 1/_this.engine.getFps();
         if(time > timeInterval){
             time = 0;
             $("#roundCounter span").html(_this.roundCounter);
             if(!_this.paused){
                 _this.board.nextRound();
-                _this.roundCounter++;               
+                _this.roundCounter++; 
+                _this.sounds.playRandomSound();              
             }
 
         }

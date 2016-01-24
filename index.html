@@ -23,7 +23,7 @@
 
 
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-    <title>The Game of Life 3D</title>
+    <title>The Game of Life</title>
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="libs/material.css">
@@ -31,6 +31,10 @@
 </head> 
 <body>
 	<div id="open_sidemenu" class="material-icons">menu</div>
+    <div id="volume_controll">
+        <i id="volume_up" class="material-icons">volume_up</i>
+        <i id="volume_off" class="material-icons">volume_off</i>
+    </div>
 	<div id="menu_wrapper" class="mdl-shadow--4dp"> 
 		<div class="mdl-shadow--2dp menu_filler"><div class="menu_header"><i class="material-icons">settings</i><div class="text">Settings</div></div></div>
 		<div id="close_sidemenu" class="material-icons">cancel</div>
@@ -41,7 +45,7 @@
 		
 		<div class="menu_section"> 
 			<div class="field_description">Time Interval</div>
-			<input id="time_inverval" class="mdl-slider mdl-js-slider" type="range" min="1" max="10" value="5" tabindex="0">
+			<input id="time_inverval" class="mdl-slider mdl-js-slider" type="range" min="1" max="30" value="15" tabindex="0">
 		</div> 
         
         <div id="pause_btn" class="menu_section"> 

@@ -14,6 +14,7 @@ html, body {
 	touch-action: none;
 }
 #menu_wrapper{
+    overflow: auto;
 	position: fixed;
 	padding-top: 60px; 
 	width: 290px;
@@ -140,9 +141,6 @@ html, body {
 .mdl-radio__outer-circle , .mdl-radio__inner-circle{
     border-color: white;
 }
-#begin_btn{
-    color: white;
-}
 .field_size_input{
     width: 44px;
     padding: 8px;
@@ -197,10 +195,51 @@ html, body {
     width: 100%;
     text-align: center;
     display: none;
+    pointer-events: none;
 }
 #select_done{
     background: rgb(0, 204, 0) none repeat scroll 0% 0%;
     margin-top: 30px;
     padding-left: 30px;
     padding-right: 30px;
+    pointer-events: auto;
+}
+#volume_controll{
+    color: white;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+#volume_off{
+    display: none;
+}
+
+
+
+@media screen and (max-width: 700px) {
+    #start_screen { 
+        top: 0px;
+        bottom: 0px;
+        transform: none;
+        padding-top: 30px;
+        padding-left: 5%;
+        left: 0px;
+        max-width: 100%;
+        overflow: auto;
+    }
+    #begin_btn{
+        width: 90%;
+        margin-bottom: 34px;
+    }
+    .field_size_input{
+        width: 40px;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
 }

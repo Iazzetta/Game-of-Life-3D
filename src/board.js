@@ -25,9 +25,9 @@ Board.prototype.createBoard = function(shape, dist){
     
     var cellObj;
     if(shape == "spheres")
-        cellObj = BABYLON.MeshBuilder.CreateSphere("SPS", { segments: 3 ,diameterX: 4,diameterY: 4, diameterZ: 4}, this.game.scene, {isPickable: true});
+        cellObj = BABYLON.MeshBuilder.CreateSphere("SPS", { segments: 4 ,diameterX: 4,diameterY: 4, diameterZ: 4}, this.game.scene, {isPickable: true});
     else
-        cellObj =  BABYLON.MeshBuilder.CreateBox("SPS", {size: 3}, this.game.scene, {isPickable: true});   
+        cellObj =  BABYLON.MeshBuilder.CreateBox("SPS", {size: 3.3}, this.game.scene, {isPickable: true});   
         
     this.sps.addShape(cellObj, this.totalSize);
     this.allMesh = this.sps.buildMesh();

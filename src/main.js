@@ -43,7 +43,18 @@ $("#select_done").click(function(){
     game.selectDone();
     sidemenu.showToggler();
 });
-
+$("#volume_controll").click(function(){
+    if($("#volume_off").css("display") == "inline"){
+        $("#volume_off").hide(); 
+        $("#volume_up").show();
+        game.sounds.unMute();
+    } 
+    else{
+        $("#volume_off").show();
+        $("#volume_up").hide();
+        game.sounds.mute();
+    }
+});
 
 var sidemenu = {
 	//Width of sidemenu
