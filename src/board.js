@@ -1,36 +1,38 @@
 /// <reference path="cell.js"/>
-//Constructor 
+/**
+ * This is where all the fun happens concerning the Conway algorithm. The Board class has all information needed determine cell states.
+ * Maximum
+ * 
+ */
 function Board(a_game){
     if ( !(this instanceof Board) )
         throw new Error("Constructor in 'Board' called as a function");
 
-    //Members
-    this.sizeX;
-    this.sizeY;
-    this.totalSize;
-    this.game = a_game; 
-    this.cells = [];
-    this.allMesh;
-    this.sps;
+    //Variables
+    this.sizeX;             //Maximum Size in X-Direction
+    this.sizeY;             //Maximum Size in Y-Direction (Note that in webGL this is actually the z-direction)
+    this.game = a_game;
+    this.cells = [];        //Stores all cell objects
+    this.sps;               //Babylon JS Solid Partical System
 }
 
+//Change Size of the Board
 Board.prototype.setSize = function(a_sizeX, a_sizeY){
     this.sizeX = a_sizeX;
     this.sizeY = a_sizeY;
-    this.totalSize = this.sizeX * this.sizeY;
 }
-Board.prototype.createBoard = function(shape, dist){
-    
-    this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene, {isPickable: true});
-    
+
+//Create Board using the SPS to create Mesh for every Cell and than create the Cell Objects
+Board.prototype.createBoard = function(shape, dist, callback){
     var cellObj;
     if(shape == "spheres")
         cellObj = BABYLON.MeshBuilder.CreateSphere("SPS", { segments: 4 ,diameterX: 4,diameterY: 4, diameterZ: 4}, this.game.scene, {isPickable: true});
     else
         cellObj =  BABYLON.MeshBuilder.CreateBox("SPS", {size: 3.3}, this.game.scene, {isPickable: true});   
-        
-    this.sps.addShape(cellObj, this.totalSize);
-    this.allMesh = this.sps.buildMesh();
+    
+    this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene, {isPickable: true});    
+    this.sps.addShape(cellObj, this.sizeX * this.sizeY);
+    this.sps.buildMesh();
     cellObj.dispose(); 
     
     var spsCounter = 0;
@@ -48,21 +50,32 @@ Board.prototype.createBoard = function(shape, dist){
         } 
     }
     this.sps.setParticles();
+    callback();
 }  
+
+//Reset board, delete mesh, sps and the cell objects
 Board.prototype.reset = function(){
     for(var x = 0; x < this.cells.length; x++){  
         var cellsY = this.cells[x];
         for(var y = 0; y < cellsY.length; y++){
-            this.cells[x][y] = null;
+            this.cells[x][y] = null;    //Set to null so the GB can collect it
         } 
     }
     this.sps.dispose();
-    this.sps = null;
+    this.sps = null;    //Set to null so the GB can collect it
 }
+
+//Called when user wants to select inital sate by himself, Creates event handelers for the the picking
 Board.prototype.startSelection = function(){
     this.sps.refreshVisibleSize();
     var _this = this;
     var activeIdx = -1;    
+   
+    /*  This is kind of a hack, because babylon js doesnt feature a ... onPointerClickDownAndUp
+        I store the activeIdx when clicking Down and the when clicking Up the state only gets changed
+        if the idx is the same as when clicked down. This ensures that the user can move around the
+        camera without changing the cells all the time  */
+   
     this.game.scene.onPointerDown = function(evt, pickResult) {      
         var meshFaceId = pickResult.faceId; 
         if (meshFaceId == -1) {
@@ -77,6 +90,7 @@ Board.prototype.startSelection = function(){
         if (meshFaceId == -1) {return;}                    
         var idx = _this.sps.pickedParticles[meshFaceId].idx; 
         if(activeIdx == idx){
+            //The sps stores the mesh in one dimensional array, this is to find the corresponding cell x-id and y-id
             var x = Math.floor(idx / _this.sizeX);
             var y = idx - (x * _this.sizeX); 
     
@@ -92,6 +106,8 @@ Board.prototype.startSelection = function(){
         }
     };
 }
+
+//Remove the event listeners to pick mesh and change its state
 Board.prototype.endSelection = function(){
     this.game.scene.onPointerDown = function(evt, pickResult) {      
         return;
@@ -101,62 +117,82 @@ Board.prototype.endSelection = function(){
     };
 }
 
-/**************************/
-/*** Conway Algorithm ****/
-/************************/
-Board.prototype.nextRound = function(){
-    var tmpCells = [];
+
+
+/*******************************/
+/***** Conway Algorithm *******/
+/*****************************/
+
+//This is called for every time a new round has be calculated
+Board.prototype.nextRound = function(){ 
+    var tmpCells = [];                                                  //Needed to update the board in disrect time steps
     for(var x = 0; x < this.sizeX; x++){  
         tmpCells[x] = [];
-        for(var y = 0; y < this.sizeY; y++){
-            var living = this.cells[x][y].isAlive();
-            var counter = this.countLivingNeighbours(x , y);
-            var result = 0;
-            //Apply rules  
-            if(living && counter < 2 || counter > 3)
+        for(var y = 0; y < this.sizeY; y++){                            //Loop through all the cells
+            var living = this.cells[x][y].isAlive();                    //Ceck if the current cell is alive or dead
+            var counter = this.countLivingNeighbours(x , y);            //Check how many living cells the current one has
+            var result = living;                                        //Store the result => dead or alive (0 or 1)
+            
+            //All rules are applayed right here
+            if(living && counter < 2 || counter > 3)                    //Rule: cell dies if there are more then 3 or less then 2 living neighbours
                 result = 0;
-            else if(living)
-                result = 1;
-            else if(!living && counter == 3)
+            else if(!living && counter == 3)                            //Rule: is the cell dead already and there are exactly 2 living neighbours => the cell is born
                 result = 1; 
             
-            tmpCells[x][y] = result;
+            tmpCells[x][y] = result;                                    //Write result into temporary Array
         } 
     }
-    //Update real Cells
+    
+    //Update the actuall Cells
     for(var x = 0; x < this.sizeX; x++){  
         for(var y = 0; y < this.sizeY; y++){
             this.cells[x][y].setState(tmpCells[x][y]);
         } 
     }
+    
     this.sps.setParticles();
 }
-Board.prototype.countLivingNeighbours = function(x , y){
-    var count = 0;
-    
-    if(this.cells[this.lookUpX(x+1)][y].isAlive()) count++;
-    if(this.cells[this.lookUpX(x-1)][y].isAlive()) count++;
-    if(this.cells[x][this.lookUpY(y+1)].isAlive()) count++;
-    if(this.cells[x][this.lookUpY(y-1)].isAlive()) count++;
-    if(this.cells[this.lookUpX(x+1)][this.lookUpY(y+1)].isAlive()) count++;
-    if(this.cells[this.lookUpX(x+1)][this.lookUpY(y-1)].isAlive()) count++;
-    if(this.cells[this.lookUpX(x-1)][this.lookUpY(y+1)].isAlive()) count++;
-    if(this.cells[this.lookUpX(x-1)][this.lookUpY(y-1)].isAlive()) count++;
 
-    return count;
+//Check how many living neighbours are cell has
+Board.prototype.countLivingNeighbours = function(x , y){
+    var countAlive = 0;
+    
+    if(this.cells[this.lookUpXHigh(x+1)][y].isAlive()) countAlive++;
+    if(this.cells[this.lookUpXLow(x-1)][y].isAlive()) countAlive++;
+    if(this.cells[x][this.lookUpYHigh(y+1)].isAlive()) countAlive++;
+    if(this.cells[x][this.lookUpYLow(y-1)].isAlive()) countAlive++;
+    if(this.cells[this.lookUpXHigh(x+1)][this.lookUpYHigh(y+1)].isAlive()) countAlive++;
+    if(this.cells[this.lookUpXHigh(x+1)][this.lookUpYLow(y-1)].isAlive()) countAlive++;
+    if(this.cells[this.lookUpXLow(x-1)][this.lookUpYHigh(y+1)].isAlive()) countAlive++;
+    if(this.cells[this.lookUpXLow(x-1)][this.lookUpYLow(y-1)].isAlive()) countAlive++;
+
+    return countAlive;
 }
 
-Board.prototype.lookUpX = function(x){
+//Check if X-Value is too big and has to start at 0
+Board.prototype.lookUpXHigh = function(x){
     if(x >= (this.sizeX))
         return 0;
-    else if(x < 0)
-        return (this.sizeX - 1);
-    return x;
+    return x; 
 }
-Board.prototype.lookUpY = function(y){
+
+//Check if X-Value is too small and has to start at 0
+Board.prototype.lookUpXLow = function(x){
+    if(x < 0)
+        return (this.sizeX - 1);
+    return x; 
+}
+
+//Check if Y-Value is too big and has to start at 0
+Board.prototype.lookUpYHigh = function(y){
     if(y >= (this.sizeY)) 
         return 0;
-    else if(y < 0)
+    return y;
+}
+
+//Check if Y-Value is too small and has to start at 0
+Board.prototype.lookUpYLow = function(y){
+    if(y < 0)
         return (this.sizeY - 1);
     return y;
 }

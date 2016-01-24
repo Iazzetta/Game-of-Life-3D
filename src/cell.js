@@ -1,4 +1,8 @@
-//Constructor 
+/**
+ * This Class represents a single cell, it stores state and position aswell as the mesh it is made of.
+ * Then the state can be change with the setState() function.
+ */
+
 function Cell(a_game , a_x , a_y, a_state, a_mesh){
     if ( !(this instanceof Cell) )
         throw new Error("Constructor in 'Cell' called as a function");
@@ -11,11 +15,13 @@ function Cell(a_game , a_x , a_y, a_state, a_mesh){
     this.mesh = a_mesh;
 }
 
+//Init the Cell, move it the the desired position and set the inital state
 Cell.prototype.init = function(){
     this.mesh.position = new BABYLON.Vector3(this.posX, 0, this.posY);
-    this.mesh.material = new BABYLON.StandardMaterial("box", this.game.scene);
     this.setState(this.state);
 } 
+
+//Change state of the Cell and set it to being alive or dead. It then changes the color accordingly
 Cell.prototype.setState = function(a_state){
     if(a_state == 1){
         this.mesh.color.r = 0.3;
@@ -29,6 +35,8 @@ Cell.prototype.setState = function(a_state){
     }
     this.state = a_state;
 }
+
+//Check if the Cell is Alive or Dead
 Cell.prototype.isAlive = function(){
     return this.state;
 }

@@ -7,7 +7,6 @@ html, body {
 	font-family: 'Roboto', sans-serif;
 	font-size: 17px;
 }
-
 #renderCanvas {
 	width   : 100%;
 	height  : 100%;
@@ -67,7 +66,7 @@ html, body {
 	position: fixed;
 	left: 10px;
 	top: 10px;
-	font-size: 36px;
+	font-size: 40px;
 	cursor: pointer;
 	color: white;
 	background: rgba(255,255,255,0.1);
@@ -101,27 +100,33 @@ html, body {
     margin-top: 14px;
 
 }
-#pause_btn{
+#resume_btn, #pause_btn, #restart_btn{
     text-align: center;
-    border: 2px solid #3E3E3E;
+    border: 2px solid white;
     cursor: pointer;
     background: #535050;
     color: white;
-}
-#resume_btn{
-    text-align: center;
-    border: 2px solid #5D9237;
-    cursor: pointer;
-    background: #5DB15D;
-    color: white;
     display: none;
+    -webkit-transition: background 0.2s ease;
+    -moz-transition: background 0.2s ease;
+    -o-transition: background 0.2s ease;
+    transition: background 0.2s ease;
+}
+#pause_btn:hover{
+    background: #444;
+}
+#resume_btn:hover{
+    background: #444;
+}
+#pause_btn{
+    display:block;
 }
 #restart_btn{
-    text-align: center;
-    border: 2px solid #8A5C5C;
-    cursor: pointer;
-    background: #cf7171;
-    color: white;
+    background: rgb(63,81,181);
+    display: block;
+}
+#restart_btn:hover{
+    background: rgb(64, 75, 134);
 }
 
 #start_screen{
@@ -133,7 +138,6 @@ html, body {
     background: rgba(0, 0, 0, 0.3) none repeat scroll 0% 0%;
     padding: 50px;
     width: 100%;
-    display: none;
     margin-left: auto;
     margin-right: auto;
     max-width: 580px;
@@ -219,8 +223,20 @@ html, body {
 #volume_off{
     display: none;
 }
-
-
+#is_loading{
+    position: fixed;
+    color: white;
+    width: 100%;
+    text-align: center;
+    display: none;
+    margin-top: 20%;
+}
+.begin_info{
+    font-size: 15px;
+    margin-top: 10px;
+    text-align: center;
+    width: 99%;
+}
 
 @media screen and (max-width: 700px) {
     #start_screen { 
@@ -235,7 +251,10 @@ html, body {
     }
     #begin_btn{
         width: 90%;
-        margin-bottom: 34px;
+    }
+    .begin_info{
+        width: 90%;
+        margin-bottom: 35px;
     }
     .field_size_input{
         width: 40px;

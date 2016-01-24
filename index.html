@@ -26,7 +26,7 @@
     <meta name="theme-color" content="#ffffff">
 
 
-	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
     <title>The Game of Life</title>
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -39,6 +39,7 @@
         <i id="volume_up" class="material-icons">volume_up</i>
         <i id="volume_off" class="material-icons">volume_off</i>
     </div>
+    <div id="is_loading">World is loading...</div>
 	<div id="menu_wrapper" class="mdl-shadow--4dp"> 
 		<div class="mdl-shadow--2dp menu_filler"><div class="menu_header"><i class="material-icons">settings</i><div class="text">Settings</div></div></div>
 		<div id="close_sidemenu" class="material-icons">cancel</div>
@@ -73,9 +74,9 @@
         <img src="assets/images/header.png" id="header_img"/>
         <div class="field_size_wrapper">
             <label class="field_size_label">Chose Field Size</label>
-            <input class="field_size_input" id="field_size_x" placeholder="X" value="30">
+            <input class="field_size_input" id="field_size_x" placeholder="X" value="40">
             <span id="span_x">x</span>
-            <input class="field_size_input" id="field_size_y" placeholder="Y" value="30">
+            <input class="field_size_input" id="field_size_y" placeholder="Y" value="40">
         </div>
         <div class="selects_wrapper"> 
             <label class="select_info">Cells are represented by</label>
@@ -102,6 +103,7 @@
         <button id="begin_btn" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
             Start Game
         </button>
+        <div class="begin_info">or press <i>enter</i></div>
     </div>
     
     <div id="game_paused">Game is Paused</div>
