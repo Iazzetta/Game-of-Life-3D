@@ -5,4 +5,4 @@ For more information about babylon.js visit the offical site with lots of great 
 
 
 ## Running the Code
-A running version of the code can be found at 185.82.21.82/gameoflife. But you can also run it on your computer. Simply fire up the index.html file in any browser that support webGL. 
+A running version of the code can be found at http://185.82.21.82/gameoflife. But you can also run it on your computer. Simply fire up the index.html file in any browser that support webGL. 
