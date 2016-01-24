@@ -19,24 +19,31 @@ Board.prototype.setSize = function(a_sizeX, a_sizeY){
     this.sizeY = a_sizeY;
     this.totalSize = this.sizeX * this.sizeY;
 }
-Board.prototype.createBoard = function(shape){
+Board.prototype.createBoard = function(shape, dist){
     
     this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene, {isPickable: true});
+    
     var cellObj;
     if(shape == "spheres")
-        cellObj = BABYLON.MeshBuilder.CreateSphere("s", { segments: 3 ,diameterX: 4,diameterY: 4, diameterZ: 4}, this.game.scene);
+        cellObj = BABYLON.MeshBuilder.CreateSphere("SPS", { segments: 3 ,diameterX: 4,diameterY: 4, diameterZ: 4}, this.game.scene, {isPickable: true});
     else
-        cellObj =  BABYLON.MeshBuilder.CreateBox("b", {size: 3}, this.game.scene);   
+        cellObj =  BABYLON.MeshBuilder.CreateBox("SPS", {size: 3}, this.game.scene, {isPickable: true});   
+        
     this.sps.addShape(cellObj, this.totalSize);
     this.allMesh = this.sps.buildMesh();
-    cellObj.dispose();
+    cellObj.dispose(); 
+    
     var spsCounter = 0;
     for(var x = 0; x < this.sizeX; x++){  
         this.cells[x] = []; 
         for(var y = 0; y < this.sizeY; y++){
-            var state = Math.random() > 0.9 ? 1 : 0;
+            var state;
+            if(dist == "random")
+                state = Math.random() > 0.9 ? 1 : 0;
+            else    
+                state = 0;
             this.cells[x][y] = new Cell(this.game, (x-this.sizeX/2 + 0.5)*5 , (y-this.sizeY/2 + 0.5)*5, state, this.sps.particles[spsCounter]);
-            this.cells[x][y].draw(); 
+            this.cells[x][y].init(); 
             spsCounter++; 
         } 
     }
@@ -52,6 +59,51 @@ Board.prototype.reset = function(){
     this.sps.dispose();
     this.sps = null;
 }
+Board.prototype.startSelection = function(){
+    this.sps.refreshVisibleSize();
+    var _this = this;
+    var activeIdx = -1;    
+    this.game.scene.onPointerDown = function(evt, pickResult) {      
+        var meshFaceId = pickResult.faceId; 
+        if (meshFaceId == -1) {
+            activeIdx = -1;
+            return;
+        }        
+        activeIdx = _this.sps.pickedParticles[meshFaceId].idx;
+        return;
+    }
+    this.game.scene.onPointerUp = function(evt, pickResult) {
+        var meshFaceId = pickResult.faceId;            
+        if (meshFaceId == -1) {return;}                    
+        var idx = _this.sps.pickedParticles[meshFaceId].idx; 
+        if(activeIdx == idx){
+            var x = Math.floor(idx / _this.sizeX);
+            var y = idx - (x * _this.sizeX); 
+    
+            if(_this.cells[x][y].isAlive())
+                _this.cells[x][y].setState(0);
+            else
+                _this.cells[x][y].setState(1);
+            _this.sps.setParticles();
+        }
+        else{
+            activeIdx = -1;
+            return;
+        }
+    };
+}
+Board.prototype.endSelection = function(){
+    this.game.scene.onPointerDown = function(evt, pickResult) {      
+        return;
+    }
+    this.game.scene.onPointerUp = function(evt, pickResult) {
+        return;
+    };
+}
+
+/**************************/
+/*** Conway Algorithm ****/
+/************************/
 Board.prototype.nextRound = function(){
     for(var x = 0; x < this.sizeX; x++){  
         for(var y = 0; y < this.sizeY; y++){
@@ -75,6 +127,7 @@ Board.prototype.countLivingNeighbours = function(x , y){
     if(x >= (this.sizeX - 1)) x = 0;
     if(y >= (this.sizeY - 1)) y = 0;
     var count = 0;
+    
     if(this.cells[this.lookUpX(x+1)][y].isAlive()) count++;
     if(this.cells[this.lookUpX(x-1)][y].isAlive()) count++;
     if(this.cells[x][this.lookUpY(y+1)].isAlive()) count++;

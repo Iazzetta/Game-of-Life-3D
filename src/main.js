@@ -20,15 +20,27 @@ $("#restart_btn").click(function(){
     game.restart();
     sidemenu.closeSideMenu();
     sidemenu.hideToggler();
+    $("#game_paused").hide();
+    $("#resume_btn").hide(); 
+    $("#pause_btn").show();
 });
 $("#begin_btn").click(function(){
     var shape;
+    var dist;
     if($("#box_option").prop("checked"))
         shape = "boxes";
     else
         shape = "spheres";
+    
+    if($("#random_option").prop("checked"))
+        dist = "random"
+    else
+        dist = "chose"
         
-    game.begin(shape); 
+    game.begin(shape, dist); 
+});
+$("#select_done").click(function(){
+    game.selectDone();
     sidemenu.showToggler();
 });
 

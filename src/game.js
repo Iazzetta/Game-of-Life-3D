@@ -41,11 +41,27 @@ Game.prototype.init = function(){
         _this.startRenderLoop();
     });
 } 
-Game.prototype.begin = function(shape){
-    this.loadWorld(shape);
+Game.prototype.begin = function(shape, dist){
+    //Create board
+    var sizeX = $("#field_size_x").val();
+    var sizeY = $("#field_size_y").val(); 
+    this.board.setSize(sizeX, sizeY);
+    this.board.createBoard(shape, dist);
+    
+    if(dist == "random"){
+        this.paused = false;
+        sidemenu.showToggler();
+    }
+    else{
+        this.board.startSelection();
+        $("#select_info").fadeIn("fast");
+    }
     $("#start_screen").fadeOut();
+}
+Game.prototype.selectDone = function(){
+    $("#select_info").hide();
     this.paused = false;
-
+    this.board.endSelection();
 }
 Game.prototype.unPause = function(){
     this.paused = false;
@@ -60,7 +76,6 @@ Game.prototype.restart = function(){
     $("#start_screen").fadeIn();
 }
 
-
 Game.prototype.registerEventListener = function(){
 	var _this = this; 
 	window.addEventListener('resize', function(){
@@ -72,12 +87,6 @@ Game.prototype.createCamera = function(){
     this.camera.setPosition(new BABYLON.Vector3(70, 185, -100));
     this.camera.attachControl(this.canvas, false); 
 } 
-Game.prototype.loadWorld = function(shape){
-    var sizeX = $("#field_size_x").val();
-    var sizeY = $("#field_size_y").val(); 
-    this.board.setSize(sizeX, sizeY);
-    this.board.createBoard(shape);
-}
 Game.prototype.createLight = function(){
     this.light = new BABYLON.HemisphericLight('lightHs',new BABYLON.Vector3(0, 1, 0), this.scene); 
 	this.light.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
