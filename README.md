@@ -19,8 +19,8 @@ The buttons do exactly what they say. The restart button will bring you back to 
 In the upper right corner is a mute button, in case you get annoyed by the great sounds the game is creating for you. 
 
 #### Keyboard Shortcuts
-"r" = Restart
-"p" = Pause
-"q" = open Menu
-"m" = Sound on / off
-"Enter" = start game when on start screen
+"r" = Restart   
+"p" = Pause   
+"q" = open Menu   
+"m" = Sound on / off   
+"Enter" = start game when on start screen   
