@@ -84,7 +84,7 @@ Game.prototype.registerEventListener = function(){
 }
 Game.prototype.createCamera = function(){
     this.camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 0, 0, 0, BABYLON.Vector3.Zero(), this.scene);
-    this.camera.setPosition(new BABYLON.Vector3(70, 185, -100));
+    this.camera.setPosition(new BABYLON.Vector3(0, 235, -150));
     this.camera.attachControl(this.canvas, false); 
 } 
 Game.prototype.createLight = function(){

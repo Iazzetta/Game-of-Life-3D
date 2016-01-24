@@ -105,7 +105,9 @@ Board.prototype.endSelection = function(){
 /*** Conway Algorithm ****/
 /************************/
 Board.prototype.nextRound = function(){
+    var tmpCells = [];
     for(var x = 0; x < this.sizeX; x++){  
+        tmpCells[x] = [];
         for(var y = 0; y < this.sizeY; y++){
             var living = this.cells[x][y].isAlive();
             var counter = this.countLivingNeighbours(x , y);
@@ -117,15 +119,19 @@ Board.prototype.nextRound = function(){
                 result = 1;
             else if(!living && counter == 3)
                 result = 1; 
-                
-            this.cells[x][y].setState(result);
+            
+            tmpCells[x][y] = result;
+        } 
+    }
+    //Update real Cells
+    for(var x = 0; x < this.sizeX; x++){  
+        for(var y = 0; y < this.sizeY; y++){
+            this.cells[x][y].setState(tmpCells[x][y]);
         } 
     }
     this.sps.setParticles();
 }
 Board.prototype.countLivingNeighbours = function(x , y){
-    if(x >= (this.sizeX - 1)) x = 0;
-    if(y >= (this.sizeY - 1)) y = 0;
     var count = 0;
     
     if(this.cells[this.lookUpX(x+1)][y].isAlive()) count++;
