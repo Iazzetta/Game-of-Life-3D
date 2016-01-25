@@ -1,28 +1,35 @@
 /// <reference path="cell.js"/>
 /**
  * This is where all the fun happens concerning the Conway algorithm. The Board class has all information needed determine cell states.
- * Maximum
- * 
+ * It stores board size, an array of a cell objects and the Solid Partical System to create the actuall mesh for the cells
+ * The boad can be created (creates all mesh) or reset, the size can be changed, a selection of mesh can be initiated or a new round can be initiated
  */
-function Board(a_game){
+ 
+//@game : main game object
+function Board(game){
     if ( !(this instanceof Board) )
         throw new Error("Constructor in 'Board' called as a function");
 
     //Variables
     this.sizeX;             //Maximum Size in X-Direction
     this.sizeY;             //Maximum Size in Y-Direction (Note that in webGL this is actually the z-direction)
-    this.game = a_game;
+    this.game = game;
     this.cells = [];        //Stores all cell objects
     this.sps;               //Babylon JS Solid Partical System
 }
 
 //Change Size of the Board
-Board.prototype.setSize = function(a_sizeX, a_sizeY){
-    this.sizeX = a_sizeX;
-    this.sizeY = a_sizeY;
+//@sizeX : new board size in x-direction
+//@sizeY : new board size in y-direction (z-direction in webGL)
+Board.prototype.setSize = function(sizeX, sizeY){
+    this.sizeX = sizeX;
+    this.sizeY = sizeY;
 }
 
 //Create Board using the SPS to create Mesh for every Cell and than create the Cell Objects
+//@shape : the shape the Mesh Builder should create (Box or Sphere)
+//@dist : The distirbution of the inital cell states (randomly or by hand). If by hand all cells are set to dead (0) by default
+//@callback : function that is called at after loading the mesh
 Board.prototype.createBoard = function(shape, dist, callback){
     var cellObj;
     if(shape == "spheres")
@@ -154,6 +161,8 @@ Board.prototype.nextRound = function(){
 }
 
 //Check how many living neighbours are cell has
+//@x : x-Index of the cell that is checked for living neighbours
+//@y : y-Index of the cell that is checked for living neighbours
 Board.prototype.countLivingNeighbours = function(x , y){
     var countAlive = 0;
     
@@ -170,6 +179,7 @@ Board.prototype.countLivingNeighbours = function(x , y){
 }
 
 //Check if X-Value is too big and has to start at 0
+//@x : x-Index of Cells array that should be looked up if its valid
 Board.prototype.lookUpXHigh = function(x){
     if(x >= (this.sizeX))
         return 0;
@@ -177,6 +187,7 @@ Board.prototype.lookUpXHigh = function(x){
 }
 
 //Check if X-Value is too small and has to start at 0
+//@x : x-Index of Cells array that should be looked up if its valid
 Board.prototype.lookUpXLow = function(x){
     if(x < 0)
         return (this.sizeX - 1);
@@ -184,6 +195,7 @@ Board.prototype.lookUpXLow = function(x){
 }
 
 //Check if Y-Value is too big and has to start at 0
+//@y : y-Index of Cells array that should be looked up if its valid
 Board.prototype.lookUpYHigh = function(y){
     if(y >= (this.sizeY)) 
         return 0;
@@ -191,6 +203,7 @@ Board.prototype.lookUpYHigh = function(y){
 }
 
 //Check if Y-Value is too small and has to start at 0
+//@y : y-Index of Cells array that should be looked up if its valid
 Board.prototype.lookUpYLow = function(y){
     if(y < 0)
         return (this.sizeY - 1);

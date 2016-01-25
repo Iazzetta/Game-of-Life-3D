@@ -26,7 +26,7 @@
     <meta name="theme-color" content="#ffffff">
 
 
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
     <title>The Game of Life</title>
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -49,8 +49,8 @@
 		</div>
 		
 		<div class="menu_section"> 
-			<div class="field_description">Time Interval</div>
-			<input id="time_inverval" class="mdl-slider mdl-js-slider" type="range" min="1" max="30" value="15" tabindex="0">
+			<div class="field_description">Time Interval (<span id="current_time_interval"></span> ms)</div>
+			<input id="time_inverval" class="mdl-slider mdl-js-slider" type="range" min="1" max="50" value="25" tabindex="0">
 		</div> 
         
         <div id="pause_btn" class="menu_section"> 

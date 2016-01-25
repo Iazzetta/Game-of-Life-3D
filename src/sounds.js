@@ -4,8 +4,9 @@
  * It sounds allright, but it could ofc done much better by someone who actually knows music ; )
  */
 
-var Sounds = function(a_game){
-    this.game = a_game;
+//@game : object of the main game
+var Sounds = function(game){
+    this.game = game;
     //Settings 
     this.volumeBase = 0.3;
     this.volumeHigh = 0.05;

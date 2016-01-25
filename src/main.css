@@ -6,6 +6,7 @@ html, body {
 	padding : 0;
 	font-family: 'Roboto', sans-serif;
 	font-size: 17px;
+    font-weight: 400;
 }
 #renderCanvas {
 	width   : 100%;
@@ -219,6 +220,7 @@ html, body {
    -webkit-user-select: none;
    -ms-user-select: none;
    user-select: none;
+   z-index: 3;
 }
 #volume_off{
     display: none;
@@ -244,21 +246,32 @@ html, body {
         bottom: 0px;
         transform: none;
         padding-top: 30px;
-        padding-left: 5%;
+        padding-left: 0px;
         left: 0px;
         max-width: 100%;
         overflow: auto;
     }
     #begin_btn{
         width: 90%;
+        margin-left: 6%;
     }
     .begin_info{
         width: 90%;
+        margin-left:6%;
         margin-bottom: 35px;
     }
     .field_size_input{
         width: 40px;
         margin-left: 4px;
         margin-right: 4px;
+    }
+    .field_size_wrapper{
+        padding-left: 6%;
+    }
+    .selects_wrapper{
+        padding-left: 6%;
+    }
+    html, body{
+        font-weight: 300;
     }
 }

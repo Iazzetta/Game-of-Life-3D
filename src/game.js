@@ -15,11 +15,12 @@ function Game(){
     this.scene;
     this.light;
     this.camera;
-    this.roundCounter = 1;
+    this.timeInterval = timeInterval.getTimeInterval();      //Current setting of the time interval (how fast the game is playing the next round)
+    this.roundCounter = 1;                                   //Keeps track of how many rounds have been simulated
     this.board = new Board(this);
     this.sounds = new Sounds(this);
     this.paused = true;
-    this.runningInstance = false;     //This tells the game that all mesh has already been loaded or is currently loading, When restarting the game this will be set to false
+    this.runningInstance = false;                            //This tells the game that all mesh has already been loaded or is currently loading, When restarting the game this will be set to false
     
 	var _this = this;
 	window.addEventListener('DOMContentLoaded', function(){
@@ -69,12 +70,11 @@ Game.prototype.createLight = function(){
 //Render Loop, this is called per Frame, 
 Game.prototype.startRenderLoop = function(){
 	var _this = this;
-    var time = 0;
+    var time = 0; 
 	this.engine.runRenderLoop(function(){
 		_this.scene.render();
-        var timeInterval = $("#time_inverval").val() / 50;          //Get Time intervall from setting window
-        time += 1/_this.engine.getFps();                            //Calculate passed Time per Frame and add it to the passed Time overall
-        if(time > timeInterval){                                    //Check if interval time has been reached
+        time += 1/_this.engine.getFps();        //Calculate passed Time per Frame and add it to the passed Time overall
+        if(time > _this.timeInterval){          //Check if interval time has been reached
             time = 0;
             $("#roundCounter span").html(_this.roundCounter);
             if(!_this.paused){
@@ -93,14 +93,15 @@ Game.prototype.startRenderLoop = function(){
 /***************************************/
 
 //Begin the game, this is the initial start call, all mesh is loaded here
-Game.prototype.begin = function(shape, dist, callback){
+//@shape : cube / sphere
+//@dist : distribution, random or by hand
+//@sizeX & sizeY : board size in x an y direction
+//@callback : Callback after loading the board (used to hide the loading info at the end)
+Game.prototype.begin = function(shape, dist, sizeX, sizeY, callback){
     if(!this.runningInstance){
         this.runningInstance = true;
-        
-        var sizeX = $("#field_size_x").val();
-        var sizeY = $("#field_size_y").val(); 
-        this.board.setSize(sizeX, sizeY);
-        
+  
+        this.board.setSize(sizeX, sizeY);       
         this.board.createBoard(shape, dist, callback);
         
         if(dist == "random"){
@@ -114,7 +115,7 @@ Game.prototype.begin = function(shape, dist, callback){
 }
 
 //When user is done selecting inital cells, start the game
-Game.prototype.selectDone = function(mode){
+Game.prototype.selectDone = function(){
     this.paused = false;
     this.board.endSelection();
     this.sounds.start();
@@ -137,4 +138,10 @@ Game.prototype.restart = function(){
     this.board.reset();
     this.sounds.menu();
     this.runningInstance = false;
+}
+
+//Set new Time interval because user changed it
+//@timeInterval = new time interval in seconds
+Game.prototype.setTimeInterval = function(timeInterval){
+    this.timeInterval = timeInterval;
 }

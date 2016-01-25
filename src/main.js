@@ -1,15 +1,16 @@
 /** 
- * Everything related to click events HTML / CSS GUI is here
- * Depending on the click events, diffrent game states are being 
- * called and diffrent GUI-Elements are hidden or shown
+ * Everything related to click events HTML / CSS GUI is here (all the eventhandlers for GUI clicks)
+ * Depending on the click events, diffrent game states are being initiated and diffrent HTML-Elements are hidden or shown
+ * The time interval of each rounds is managed by the timeInterval object (because no interaction with html-elements should be outside this file)
  */
 
 var game;
 $(document).ready(function(){  
-	sidemenu.init();       //Init Sidemenu
+	sidemenu.init();       //Init Sidemenu object
+    timeInterval.init();   //Init Time Interval object
 	game = new Game();     //Init Game
 });
-
+ 
 //Register some key events
 $(document).keypress(function(e) {
     var keyCode = e.keyCode || e.which; 
@@ -74,7 +75,13 @@ $("#restart_btn").click(function(){
 $("#begin_btn").click(function(){
     var shape;
     var dist; 
-    
+    //Check if field size values are integers
+    var sizeX = parseInt($("#field_size_x").val() , 10); 
+    var sizeY = parseInt($("#field_size_y").val(), 10);
+    if(!(typeof sizeX ==='number' && (sizeX % 1) === 0) || !(typeof sizeY ==='number' && (sizeY % 1) === 0)) {
+        alert("Field Size Values must be Integers!");
+        return;
+    }
     $("#is_loading").show();
     
     $("#start_screen").fadeOut("fast", function(){
@@ -91,7 +98,7 @@ $("#begin_btn").click(function(){
             dist = "chose";
         }
     
-        game.begin(shape, dist, function(){
+        game.begin(shape, dist, sizeX, sizeY, function(){
             $("#is_loading").hide();
         });
     });
@@ -119,6 +126,32 @@ $("#volume_controll").click(function(){
 });
 
 
+//Manages the time interval setting and gives game.js access to the current value in the render loop
+var timeInterval = {
+    //Interval Time in seconds
+    interval : 0.1,                 
+    //Register a eventhandler when element is changing and set inital state of interval variable
+    init : function(){
+        $("#time_inverval").change(function(){
+            timeInterval.updateTimeInterval();
+            game.setTimeInterval(timeInterval.interval);       
+            $("#current_time_interval").html(timeInterval.interval*1000);
+        }); 
+        timeInterval.updateTimeInterval();
+        $("#current_time_interval").html(timeInterval.interval*1000);
+    },
+    //Return the current time setting of the time interval
+    getTimeInterval : function(){
+        return timeInterval.interval;
+    },
+    //Get current value of the interval time
+    updateTimeInterval : function(){
+        timeInterval.interval = $("#time_inverval").val() / 200;
+    }
+}
+
+
+//Everything tha can be done with the sidemenu should be done vai the sidemneu object
 var sidemenu = {
     
 	width : 290,
