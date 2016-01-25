@@ -80,7 +80,8 @@ Game.prototype.startRenderLoop = function(){
             if(!_this.paused){
                 _this.board.nextRound();
                 _this.roundCounter++; 
-                _this.sounds.playRandomSound();              
+                if(!_this.board.frozen)
+                    _this.sounds.playRandomSound();              
             }
 
         }

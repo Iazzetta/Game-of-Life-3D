@@ -16,6 +16,7 @@ function Board(game){
     this.game = game;
     this.cells = [];        //Stores all cell objects
     this.sps;               //Babylon JS Solid Partical System
+    this.forzen;            //If the game is running, but all cells are static or dead, the board is frozen
 }
 
 //Change Size of the Board
@@ -57,6 +58,7 @@ Board.prototype.createBoard = function(shape, dist, callback){
         } 
     }
     this.sps.setParticles();
+    this.frozen = false;
     callback();
 }  
 
@@ -151,11 +153,17 @@ Board.prototype.nextRound = function(){
     }
     
     //Update the actuall Cells
+    var cellsChanging = false;      //Check if at least one cell has changed its state on the board
     for(var x = 0; x < this.sizeX; x++){  
-        for(var y = 0; y < this.sizeY; y++){
-            this.cells[x][y].setState(tmpCells[x][y]);
+        for(var y = 0; y < this.sizeY; y++){ 
+            if(this.cells[x][y].isAlive() != tmpCells[x][y]){
+                 this.cells[x][y].setState(tmpCells[x][y]);
+                 cellsChanging = true;
+            }
         } 
     }
+    
+    this.frozen = !cellsChanging;
     
     this.sps.setParticles();
 }
