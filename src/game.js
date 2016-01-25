@@ -1,8 +1,9 @@
 /// <reference path="board.js"/>
 /// <reference path="sounds.js"/>
 /**
- * Main Game Class, all the logic like pausing, restarting ... is located here
+ * Main Game Prototype, all the logic like pausing, restarting ... is located here
  * Also Babylon will be initilized here and the world will be created, including things like camera or lights
+ * This Game Prototype is relativly "dumb", if something can be executed or not is determined by the state machine in main.js
  */
  
 function Game(){
@@ -20,7 +21,7 @@ function Game(){
     this.board = new Board(this);
     this.sounds = new Sounds(this);
     this.paused = true;
-    this.runningInstance = false;                            //This tells the game that all mesh has already been loaded or is currently loading, When restarting the game this will be set to false
+   
     
 	var _this = this;
 	window.addEventListener('DOMContentLoaded', function(){
@@ -89,9 +90,9 @@ Game.prototype.startRenderLoop = function(){
 }
 
 
-/*****************************************/
-/**** Methods triggered vai User GUI ****/
-/***************************************/
+/**********************************************/
+/**** Methods triggered vai State Machine ****/
+/********************************************/
 
 //Begin the game, this is the initial start call, all mesh is loaded here
 //@shape : cube / sphere
@@ -99,20 +100,16 @@ Game.prototype.startRenderLoop = function(){
 //@sizeX & sizeY : board size in x an y direction
 //@callback : Callback after loading the board (used to hide the loading info at the end)
 Game.prototype.begin = function(shape, dist, sizeX, sizeY, callback){
-    if(!this.runningInstance){
-        this.runningInstance = true;
-  
-        this.board.setSize(sizeX, sizeY);       
-        this.board.createBoard(shape, dist, callback);
-        
-        if(dist == "random"){
-            this.paused = false;
-            this.sounds.start();
-        }
-        else{
-            this.board.startSelection();
-        }
+    this.board.setSize(sizeX, sizeY);       
+    this.board.createBoard(shape, dist, callback);
+    
+    if(dist == "random"){
+        this.paused = false;
+        this.sounds.start();
     }
+    else{
+        this.board.startSelection();
+    } 
 }
 
 //When user is done selecting inital cells, start the game
@@ -138,7 +135,6 @@ Game.prototype.restart = function(){
     this.roundCounter = 1;
     this.board.reset();
     this.sounds.menu();
-    this.runningInstance = false;
 }
 
 //Set new Time interval because user changed it

@@ -1,6 +1,6 @@
 /** 
  * Everything related to click events HTML / CSS GUI is here (all the eventhandlers for GUI clicks)
- * Depending on the click events, diffrent game states are being initiated and diffrent HTML-Elements are hidden or shown
+ * Depending on the click events, diffrent game states are being initiated and diffrent HTML-Elements are hidden or shown. Its controlled via a State Machine
  * The time interval of each rounds is managed by the timeInterval object (because no interaction with html-elements should be outside this file)
  */
 
@@ -10,56 +10,22 @@ $(document).ready(function(){
     timeInterval.init();   //Init Time Interval object
 	game = new Game();     //Init Game
 });
- 
-//Register some key events
-$(document).keypress(function(e) {
-    var keyCode = e.keyCode || e.which; 
-    
-    if (keyCode == 113) {           //When "q" is pressed toggle Sidemenu
-        sidemenu.toggleSideMenu();
-    }  
-    if(keyCode == 112) {            //When "p" is pressed pause the game     
-        if(game.paused)
-            $("#resume_btn").trigger("click");
-        else
-            $("#pause_btn").trigger("click");
-    }       
-    if(keyCode == 114) {           //When "r" is presed restart the game
-        $("#restart_btn").trigger("click");
-    } 
-    if(keyCode == 13) {           //When "Enter" is presed start the game (if start screen is showing)
-        if($("#start_screen").css("display") != "none")
-            $("#begin_btn").trigger("click");
-    } 
-    if(keyCode == 109) {           //When "m" is pressed toggle the sound options mute / unmute
-        $("#volume_controll").trigger("click");
-    } 
-});
 
-//Resume the game
-$("#resume_btn").click(function(){
-    if(game.runningInstance && $("#select_info").css("display") == "none"){
-        game.resume();
-        $(this).hide();
-        $("#pause_btn").show();
-        $("#game_paused").fadeOut("fast"); 
-    }
-});
-
-//Pause the game
-$("#pause_btn").click(function(){
-    if(game.runningInstance && $("#select_info").css("display") == "none"){
-        game.pause();
-        $(this).hide();
-        $("#resume_btn").show(); 
-        $("#game_paused").fadeIn("fast");
-    }
-});
-
-//Restarts the game and shows start screen
-$("#restart_btn").click(function(){
-    //Game can only be restarted when its actually running
-    if(game.runningInstance){
+var fsm = StateMachine.create({
+  initial: 'StartScreen',
+  
+  events: [
+    { name: 'restart',  from: ['Pause', 'Run', 'Chose'],  to: 'StartScreen' },
+    { name: 'startRandom', from: 'StartScreen', to: 'Run'    },
+    { name: 'startChosing',  from: 'StartScreen',    to: 'Chose' },
+    { name: 'doneChosing', from: 'Chose', to: 'Run'  },
+    { name: 'pausing', from: 'Run', to: 'Pause'  },
+    { name: 'resuming', from: 'Pause', to: 'Run'  }
+  ],
+  
+  callbacks: {
+      
+    onrestart:      function(event, from, to, msg) { 
         game.restart();
         sidemenu.closeSideMenu();
         sidemenu.hideToggler();
@@ -67,14 +33,70 @@ $("#restart_btn").click(function(){
         $("#game_paused").hide();
         $("#resume_btn").hide(); 
         $("#pause_btn").show();   
+        $("#select_info").hide();         
+        $("#is_loading").hide();
+    },
+    
+    onstartRandom:  function(event, from, to, msg) {
+        $("#is_loading").show();
+        $("#start_screen").fadeOut(function(){
+            sidemenu.showToggler();
+            game.begin(msg.shape, "random", msg.sizeX, msg.sizeY, function(){
+                $("#is_loading").hide();
+            });
+        });
+    },
+    
+    onstartChosing: function(event, from, to, msg) {
+        $("#is_loading").show();
+        $("#start_screen").fadeOut(function(){
+            $("#select_info").show();
+            game.begin(msg.shape, "chosing", msg.sizeX, msg.sizeY, function(){
+                $("#is_loading").hide(); 
+            });
+        });
+    },
+    
+    ondoneChosing:  function(event, from, to, msg) {
+        game.selectDone(); 
         $("#select_info").hide();
+        sidemenu.showToggler();  
+        $("#is_loading").hide();
+    },
+    
+    onresuming:     function(event, from, to, msg) {
+        game.resume(); 
+        $("#resume_btn").hide();
+        $("#pause_btn").show();
+        $("#game_paused").fadeOut("fast"); 
+    },
+    
+    onpausing:      function(event, from, to, msg) {
+        game.pause();
+        $("#pause_btn").hide();
+        $("#resume_btn").show(); 
+        $("#game_paused").fadeIn("fast");
     }
+  }
 });
 
-//Stat the game from the start screen
+//Resume the game
+$("#resume_btn").click(function(){
+    fsm.resuming();
+});
+
+//Pause the game
+$("#pause_btn").click(function(){
+    fsm.pausing();
+});
+
+//Restarts the game and shows start screen
+$("#restart_btn").click(function(){
+    fsm.restart();
+});
+
+//Start the game from the start screen
 $("#begin_btn").click(function(){
-    var shape;
-    var dist; 
     //Check if field size values are integers
     var sizeX = parseInt($("#field_size_x").val() , 10); 
     var sizeY = parseInt($("#field_size_y").val(), 10);
@@ -82,33 +104,21 @@ $("#begin_btn").click(function(){
         alert("Field Size Values must be Integers!");
         return;
     }
-    $("#is_loading").show();
+
+    var shape;
+    if($("#box_option").prop("checked")) shape = "boxes";
+    else shape = "spheres";
     
-    $("#start_screen").fadeOut("fast", function(){
-        
-        if($("#box_option").prop("checked")) shape = "boxes";
-        else shape = "spheres";
-        
-        if($("#random_option").prop("checked")){
-            dist = "random";
-            sidemenu.showToggler();
-        }
-        else{
-            $("#select_info").show();
-            dist = "chose";
-        }
-    
-        game.begin(shape, dist, sizeX, sizeY, function(){
-            $("#is_loading").hide();
-        });
-    });
+    if($("#random_option").prop("checked"))
+        fsm.startRandom({sizeX, sizeY, shape});
+    else
+        fsm.startChosing({sizeX, sizeY, shape});
+   
 });
 
 //User is finished with selecting the initial living cells
 $("#select_done").click(function(){
-    game.selectDone(); 
-    $("#select_info").hide();
-    sidemenu.showToggler();
+    fsm.doneChosing();
 });
 
 //Toggle the Volume on / off
@@ -123,6 +133,32 @@ $("#volume_controll").click(function(){
         $("#volume_up").hide();
         game.sounds.mute();
     }
+});
+
+
+//Register some key events, they really just trigger the equivalent button to the action
+$(document).keypress(function(e) {
+    
+    var keyCode = e.keyCode || e.which; 
+    
+    if (keyCode == 113) {           //When "q" is pressed toggle Sidemenu
+        sidemenu.toggleSideMenu();
+    }  
+    if(keyCode == 112) {            //When "p" is pressed pause the game     
+        if(fsm.current == "Pause")
+            $("#resume_btn").trigger("click");
+        else if(fsm.current == "Run")
+            $("#pause_btn").trigger("click");
+    }       
+    if(keyCode == 114) {           //When "r" is presed restart the game
+        $("#restart_btn").trigger("click");
+    } 
+    if(keyCode == 13) {           //When "Enter" is presed start the game (if start screen is showing)
+        $("#begin_btn").trigger("click");
+    } 
+    if(keyCode == 109) {           //When "m" is pressed toggle the sound options mute / unmute
+        $("#volume_controll").trigger("click");
+    } 
 });
 
 
