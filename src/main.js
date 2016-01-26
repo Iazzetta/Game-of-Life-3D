@@ -51,6 +51,7 @@ var fsm = StateMachine.create({
         $("#is_loading").show();
         $("#start_screen").fadeOut(function(){
             $("#select_info").show();
+            sidemenu.showToggler();
             game.begin(msg.shape, "chosing", msg.sizeX, msg.sizeY, function(){
                 $("#is_loading").hide(); 
             });
@@ -60,7 +61,6 @@ var fsm = StateMachine.create({
     ondoneChosing:  function(event, from, to, msg) {
         game.selectDone(); 
         $("#select_info").hide();
-        sidemenu.showToggler();  
         $("#is_loading").hide();
     },
     
@@ -116,6 +116,20 @@ $("#begin_btn").click(function(){
    
 });
 
+//Toggle Camera Free / Arc Rotate
+$("#free_camera").click(function(){
+    $(this).hide();
+    $("#arc_camera").show();
+    game.useArcCamera();
+});
+
+//Toggle Camera Free / Arc Rotate
+$("#arc_camera").click(function(){
+    $(this).hide();
+    $("#free_camera").show();
+    game.useFreeCamera();
+});
+
 //User is finished with selecting the initial living cells
 $("#select_done").click(function(){
     fsm.doneChosing();
@@ -140,10 +154,15 @@ $("#volume_controll").click(function(){
 $(document).keypress(function(e) {
     
     var keyCode = e.keyCode || e.which; 
-    
     if (keyCode == 113) {           //When "q" is pressed toggle Sidemenu
         sidemenu.toggleSideMenu();
     }  
+    if (keyCode == 99) {            //When "c" is pressed toggle Camera
+        if($("#arc_camera").css("display") == "block")
+            $("#arc_camera").trigger("click");
+        else
+            $("#free_camera").trigger("click");
+    }
     if(keyCode == 112) {            //When "p" is pressed pause the game     
         if(fsm.current == "Pause")
             $("#resume_btn").trigger("click");

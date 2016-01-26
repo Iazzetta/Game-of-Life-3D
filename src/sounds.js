@@ -51,7 +51,7 @@ Sounds.prototype.loadSounds = function(){
     this.highNotes[5] = new BABYLON.Sound("sound5", "assets/sounds/a5.wav", this.game.scene, null, { volume: this.volumeHigh});
     this.highNotes[6] = new BABYLON.Sound("sound5", "assets/sounds/h5.wav", this.game.scene, null, { volume: this.volumeHigh});
     this.highNotes[6] = new BABYLON.Sound("sound5", "assets/sounds/c6.wav", this.game.scene, null, { volume: this.volumeHigh});
-    
+    console.log("Starting autoplay");
     //Soundtrack from the TV-Show Mr. Robot which you should defently watch in case you havent!
     this.mainMusic = new BABYLON.Sound("mrRobot", "assets/sounds/mr-robot-i-hate-socity.mp3", this.game.scene, null , {volume: this.volumeMusic, loop: true, autoplay: true });
 }  
@@ -73,7 +73,7 @@ Sounds.prototype.playRandomSound = function(){
     this.mainMusic.stop();
     if(this.gameRunning && !this.isMuted){
         //play chord
-        var rndNr = Math.floor((Math.random() * 5));
+        var rndNr = Math.floor((Math.random() * 5)); 
         this.baseNotes[this.chords[rndNr][0]].play();
         this.baseNotes[this.chords[rndNr][1]].play();
         this.baseNotes[this.chords[rndNr][2]].play();
@@ -92,6 +92,7 @@ Sounds.prototype.start = function(){
 
 //Stop the game (when restart is called)
 Sounds.prototype.menu = function(){
-    this.mainMusic.play();
+    if(!this.mainMusic.isPlaying)
+        this.mainMusic.play();
     this.gameRunning = false;
 }

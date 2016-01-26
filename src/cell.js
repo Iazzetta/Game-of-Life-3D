@@ -30,14 +30,16 @@ Cell.prototype.init = function(){
 //@state : new state of the cell
 Cell.prototype.setState = function(state){
     if(state == 1){
-        this.mesh.color.r = 0.3;
         this.mesh.color.g = 0.8;
+        this.mesh.color.r = 0.3;
         this.mesh.color.b = 0.3;
+        this.mesh.color.a = 1.0;
     } 
     else{
         this.mesh.color.r = 0.3;
         this.mesh.color.g = 0.3;
         this.mesh.color.b = 0.3;
+        this.mesh.color.a = 0.1;
     }
     this.state = state;
 }

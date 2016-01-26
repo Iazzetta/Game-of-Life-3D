@@ -209,7 +209,7 @@ html, body {
     padding-right: 30px;
     pointer-events: auto;
 }
-#volume_controll{
+#volume_controll, #cam_controll{
     color: white;
     position: fixed;
     top: 15px;
@@ -220,7 +220,20 @@ html, body {
    -webkit-user-select: none;
    -ms-user-select: none;
    user-select: none;
-   z-index: 3;
+   z-index: 3; 
+}
+#cam_controll{
+    display: block;
+    font-size: 25px;
+    top: 18px;
+    right: 130px;
+}
+#free_camera{
+    display: none;
+    font-size: 26px;
+}
+#arc_camera{
+    font-size: 26px;
 }
 #volume_off{
     display: none;

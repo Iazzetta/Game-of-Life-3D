@@ -42,7 +42,11 @@ Board.prototype.createBoard = function(shape, dist, callback){
     this.sps.addShape(cellObj, this.sizeX * this.sizeY);
     this.sps.buildMesh();
     cellObj.dispose(); 
-    
+    var materialBC = new BABYLON.StandardMaterial("bc", this.game.scene);
+    materialBC.backFaceCulling = false;
+    this.sps.mesh.material = materialBC;
+    this.sps.mesh.hasVertexAlpha = true;
+     
     var spsCounter = 0;
     for(var x = 0; x < this.sizeX; x++){  
         this.cells[x] = []; 
