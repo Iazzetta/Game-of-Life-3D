@@ -128,6 +128,7 @@ Game.prototype.begin2D = function(shape, dist, sizeX, sizeY, callback){
     this.gameMode = 1;
     
     if(dist == "random"){
+        this.checkSound();
         this.paused = false;
         this.sounds.start();
     }
@@ -139,7 +140,7 @@ Game.prototype.begin3D = function(shape, sizeX, sizeY, sizeZ){
     this.box.setSize(sizeX, sizeY, sizeZ);       
     this.box.init(shape); 
     this.gameMode = 2;
-
+    this.checkSound();
     this.paused = false;
     this.sounds.start();
 }
@@ -147,6 +148,7 @@ Game.prototype.begin3D = function(shape, sizeX, sizeY, sizeZ){
 //When user is done selecting inital cells, start the game
 Game.prototype.selectDone = function(){
     this.paused = false;
+    this.checkSound();
     this.board.endSelection();
     this.sounds.start();
 }
@@ -176,10 +178,7 @@ Game.prototype.restart = function(){
 Game.prototype.setTimeInterval = function(timeInterval){
     this.timeInterval = timeInterval;
     //If timeinterval goes below 40ms turn of sound because it gets really messy
-    if(timeInterval < 0.05)
-        this.sounds.mute(); 
-    else
-        this.sounds.unMute;
+    this.checkSound();
 }
  
 //User wants to have the free Camera
@@ -197,4 +196,12 @@ Game.prototype.useArcCamera = function(){
     this.cameraArc.setPosition(this.cameraFree.position.clone());
     this.scene.activeCamera = this.cameraArc; 
     this.cameraArc.attachControl(this.canvas, false);
+}
+
+//Checks for timeinterval if sounds need to be turend off
+Game.prototype.checkSound = function(){
+    if(this.timeInterval < 0.05)
+        this.sounds.mute(); 
+    else
+        this.sounds.unMute();
 }
