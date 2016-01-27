@@ -39,6 +39,9 @@ var fsm = StateMachine.create({
         $("#pause_btn").show();   
         $("#select_info").hide();         
         $("#is_loading").hide();
+        //Because the sound gets muted for intervals faster than 50 ms
+        if($("#volume_off").css("display") == "inline"){
+            game.sounds.unMute();
     },
     
     onstartRunning:  function(event, from, to, msg) {

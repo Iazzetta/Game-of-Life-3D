@@ -133,7 +133,7 @@ Box.prototype.nextRound = function(){
     this.sps.addShape(cellObj, spsCounter);
     this.sps.buildMesh();
     cellObj.dispose();
-      
+        
     //Update the actuall Cells
     spsCounter = 0;
     var cellsChanging = false;      //Check if at least one cell has changed its state on the board
@@ -154,7 +154,6 @@ Box.prototype.nextRound = function(){
     }
     
     this.frozen = !cellsChanging;
-    
     this.sps.setParticles();
 }
 

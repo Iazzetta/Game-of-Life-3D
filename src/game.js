@@ -67,21 +67,24 @@ Game.prototype.createCamera = function(){
 	this.cameraFree.keysLeft = [65]; // A
 	this.cameraFree.keysRight = [68]; // D  
     this.cameraFree.speed = 4;
+    this.cameraFree.minZ = 0.1;
     //Creat Arc Camera
     this.cameraArc = new BABYLON.ArcRotateCamera("ArcRotateCamera", 0, 0, 0, BABYLON.Vector3.Zero(), this.scene);
     this.cameraArc.setPosition(new BABYLON.Vector3(0, 235, -150));
+    this.cameraArc.minZ = 0.1; 
     //Set Arc as Defualt camera
     this.scene.activeCamera = this.cameraArc;
-    this.cameraArc.attachControl(this.canvas, false); 
+    this.cameraArc.attachControl(this.canvas, false);  
 } 
 
 //Create Lights, maybe add another lightsource (like a directional light from below)
 Game.prototype.createLight = function(){
     this.light = new BABYLON.HemisphericLight('lightHs',new BABYLON.Vector3(0.2, 1, 0.2), this.scene); 
 	this.light.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
+    this.light.intensity = 1.3;
     this.light2 = new BABYLON.HemisphericLight('lightHs2',new BABYLON.Vector3(0.2, -1, 0.2), this.scene); 
 	this.light2.specular = new BABYLON.Color3(0.2, 0.2, 0.2);
-    this.light2.intensity = 0.5;
+    this.light2.intensity = 0.3;
 }
 
 //Render Loop, this is called per Frame, 
@@ -89,7 +92,6 @@ Game.prototype.startRenderLoop = function(){
 	var _this = this;
     var time = 0; 
 	this.engine.runRenderLoop(function(){
-		_this.scene.render();
         time += 1/_this.engine.getFps();        //Calculate passed Time per Frame and add it to the passed Time overall
         if(time > _this.timeInterval){          //Check if interval time has been reached
             time = 0;
@@ -104,8 +106,9 @@ Game.prototype.startRenderLoop = function(){
                 if(!_this.board.frozen && !_this.box.frozen)
                     _this.sounds.playRandomSound();              
             }
-
         }
+        
+        _this.scene.render();
 	});
 }
 
@@ -172,6 +175,11 @@ Game.prototype.restart = function(){
 //@timeInterval = new time interval in seconds
 Game.prototype.setTimeInterval = function(timeInterval){
     this.timeInterval = timeInterval;
+    //If timeinterval goes below 40ms turn of sound because it gets really messy
+    if(timeInterval < 0.05)
+        this.sounds.mute(); 
+    else
+        this.sounds.unMute;
 }
  
 //User wants to have the free Camera
@@ -180,7 +188,7 @@ Game.prototype.useFreeCamera = function(){
     this.cameraFree.position = this.cameraArc.position.clone();
     this.cameraFree.setTarget(new BABYLON.Vector3.Zero()); //If target is not a (0,0,0), exchange with target position
     this.scene.activeCamera = this.cameraFree;
-    this.cameraFree.attachControl(this.canvas);
+    this.cameraFree.attachControl(this.canvas, false);
 }
 
 //User wants to move around with the Arc Rotate Camera (default)
@@ -188,5 +196,5 @@ Game.prototype.useArcCamera = function(){
     this.cameraFree.detachControl(this.canvas);
     this.cameraArc.setPosition(this.cameraFree.position.clone());
     this.scene.activeCamera = this.cameraArc; 
-    this.cameraArc.attachControl(this.canvas);
+    this.cameraArc.attachControl(this.canvas, false);
 }
