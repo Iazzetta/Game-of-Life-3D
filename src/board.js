@@ -41,7 +41,7 @@ Board.prototype.createBoard = function(shape, dist, callback){
     this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene, {isPickable: true});    
     this.sps.addShape(cellObj, this.sizeX * this.sizeY);
     this.sps.buildMesh();
-    cellObj.dispose(); 
+    cellObj.dispose();  
     var materialBC = new BABYLON.StandardMaterial("bc", this.game.scene);
     materialBC.backFaceCulling = false;
     this.sps.mesh.material = materialBC;
@@ -57,7 +57,7 @@ Board.prototype.createBoard = function(shape, dist, callback){
             else    
                 state = 0;
             this.cells[x][y] = new Cell(this.game, (x-this.sizeX/2 + 0.5)*5 , (y-this.sizeY/2 + 0.5)*5, state, this.sps.particles[spsCounter]);
-            this.cells[x][y].init(); 
+            this.cells[x][y].init();  
             spsCounter++; 
         } 
     }

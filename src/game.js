@@ -75,10 +75,10 @@ Game.prototype.createCamera = function(){
 //Create Lights, maybe add another lightsource (like a directional light from below)
 Game.prototype.createLight = function(){
     this.light = new BABYLON.HemisphericLight('lightHs',new BABYLON.Vector3(0, 1, 0), this.scene); 
-	this.light.specular = new BABYLON.Color3(0.2, 0.2, 0.2);
-    //this.light2 = new BABYLON.HemisphericLight('lightHs2',new BABYLON.Vector3(0, -1, 0), this.scene); 
-	//this.light2.specular = new BABYLON.Color3(0.2, 0.2, 0.2);
-    //this.light2.intensity = 0.2;
+	this.light.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
+    this.light2 = new BABYLON.HemisphericLight('lightHs2',new BABYLON.Vector3(0, -1, 0), this.scene); 
+	this.light2.specular = new BABYLON.Color3(0.2, 0.2, 0.2);
+    this.light2.intensity = 0.5;
 }
 
 //Render Loop, this is called per Frame, 

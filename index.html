@@ -76,7 +76,17 @@
 	
     <div id="start_screen">
         <img src="assets/images/header.png" id="header_img"/>
-        <div class="field_size_wrapper">
+        <div class="selects_wrapper">
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="2d_option">
+                <input type="radio" id="2d_option" class="mdl-radio__button" name="dimension_option" value="1" checked>
+                <span class="mdl-radio__label">2D</span>
+            </label>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="3d_option">
+                <input type="radio" id="3d_option" class="mdl-radio__button" name="dimension_option" value="2">
+                <span class="mdl-radio__label">3D</span>
+            </label>
+        </div>
+        <div class="selects_wrapper">
             <label class="field_size_label">Chose Field Size</label>
             <input class="field_size_input" id="field_size_x" placeholder="X" value="40">
             <span id="span_x">x</span>
@@ -124,7 +134,7 @@
 
 <script src="libs/material.min.js"></script> 
 <script src="libs/hand.js"></script>
-<script src="libs/babylon.2.2.min.js"></script>
+<script src="libs/babylon.2.3.0-alpha.js"></script>
 <script src="libs/jquery-1.11.3.min.js"></script>
 <script src="libs/state-machine.js"></script>
 

@@ -149,6 +149,15 @@ $("#volume_controll").click(function(){
     }
 });
 
+//Click event for 2D Option
+$("#2d_option").click(function(){
+    console.log("2D");
+});
+
+//Click event for 3D Option
+$("#3d_option").click(function(){
+    console.log("3D");
+});
 
 //Register some key events, they really just trigger the equivalent button to the action
 $(document).keypress(function(e) {

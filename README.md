@@ -17,11 +17,19 @@ Chose some cells to be alive simply by clicking on it. Than start the game and s
 The menu button is in the upper left corner. It contains a count of how many rounds the current game has been running, a Pause/Resume button and a Restart Button.
 Also you can change the time intervall for every round and speed up or slow down the game.
 The buttons do exactly what they say. The restart button will bring you back to the start screen and you can chose a new setup.    
-In the upper right corner is a mute button, in case you get annoyed by the great sounds the game is creating for you. 
-
+In the upper right corner is a mute button, in case you get annoyed by the great sounds the game is creating for you.    
+Also in the upper right corner you can find a button to switch camera from Arc Rotation Camera to a Free moving Camera. It can be 
+moved around with w,a,s,d and by moving the mouse while clicking on the screen.
 #### Keyboard Shortcuts
 r = Restart   
 p = Pause   
 q = open Menu   
 m = Sound on / off   
-Enter = start game when on start screen   
+Enter = start game when on start screen 
+c = toggle camera arc / free
+
+(when free camera is used:)
+w = move forward
+a = move left
+d = move right
+s = move back  

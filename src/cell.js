@@ -39,7 +39,7 @@ Cell.prototype.setState = function(state){
         this.mesh.color.r = 0.3;
         this.mesh.color.g = 0.3;
         this.mesh.color.b = 0.3;
-        this.mesh.color.a = 0.1;
+        this.mesh.color.a = 0.6;
     }
     this.state = state;
 }
