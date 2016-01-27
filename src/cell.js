@@ -1,3 +1,4 @@
+/// <reference path="game.js"/>
 /**
  * This Class represents a single cell, it stores state and position aswell as the mesh it is made of.
  * Then the state can be change with the setState() function.
@@ -31,8 +32,8 @@ Cell.prototype.init = function(){
 //Update the color of the Cell acording to its state
 Cell.prototype.updateColor = function(){
     if(this.state == 1 && this.mesh != null){
-        this.mesh.color.r = 0.3;
-        this.mesh.color.g = 0.8; 
+        this.mesh.color.r = 0.3; 
+        this.mesh.color.g = 0.89; 
         this.mesh.color.b = 0.3;
     } 
     else if(this.mesh != null){
@@ -47,9 +48,6 @@ Cell.prototype.updateColor = function(){
 Cell.prototype.setState = function(state){
     this.state = state;
 }
-
-
-
 
 //Check if the Cell is Alive or Dead
 Cell.prototype.isAlive = function(){

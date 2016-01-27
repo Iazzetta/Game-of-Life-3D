@@ -1,4 +1,5 @@
 /// <reference path="cell.js"/>
+/// <reference path="game.js"/>
 /**
  * Very similar to the board prototype. But now in 3D !! It is no more possible to pick mesh, just a random distribution.
  * This is because it is not possible to get transparent particels with correct faces to each other :(
@@ -18,20 +19,22 @@ function Box(game){
     this.cells = [];        //Stores all cell objects
     this.sps = null;        //Babylon JS Solid Partical System
     this.forzen;            //If the game is running, but all cells are static or dead, the board is frozen
+    this.boundingBox = null;//Bounding box that outlines the edges of the 
 }
 
 //Change Size of the Board
 //@sizeX : new board size in x-direction
 //@sizeY : new board size in y-direction (z-direction in webGL)
-Board.prototype.setSize = function(sizeX, sizeY, sizeZ){
+Box.prototype.setSize = function(sizeX, sizeY, sizeZ){
     this.sizeX = sizeX;
     this.sizeY = sizeY;
     this.sizeZ = sizeZ;
 }
 
 //Create Inital Box (just the states NO MESH). The Mesh is disposed and create on every time "next Round is called"
+//To see the outlines of the maximum box size, a transaprent box is created around the the bounds
 //@shape : the shape the Mesh Builder should create (Box or Sphere) 
-Board.prototype.initBox = function(shape){    
+Box.prototype.init = function(shape){    
     
     this.shape = shape;
     var spsCounter = 0;
@@ -42,7 +45,7 @@ Board.prototype.initBox = function(shape){
         for(var y = 0; y < this.sizeY; y++){
             this.cells[x][y] = [];
             for(var z = 0; z < this.sizeZ; z++){
-                state = Math.random() > 0.9 ? 1 : 0;
+                state = Math.random() > 0.90 ? 1 : 0;
                 this.cells[x][y][z] = new Cell(this.game, (x-this.sizeX/2 + 0.5)*5 , (y-this.sizeY/2 + 0.5)*5, (z-this.sizeZ/2 + 0.5)*5, state, null);  
                 //Count all living cells to know how many objects the sps has to create
                 if(state == 1)
@@ -51,29 +54,38 @@ Board.prototype.initBox = function(shape){
         } 
     }
     
+    this.boundingBox = BABYLON.MeshBuilder.CreateBox("boundingBox", {width: this.sizeX * 5, height: this.sizeZ * 5, depth: this.sizeY * 5}, this.game.scene);   
+    this.boundingBox.material = new BABYLON.StandardMaterial("bbMat", this.game.scene); 
+    this.boundingBox.material.diffuseColor = new BABYLON.Color3(0.8, 0.9, 0.8);
+    this.boundingBox.material.backFaceCulling = false;
+    this.boundingBox.material.alpha = 0.05;
     this.frozen = false;
 }  
 
 //Reset board, delete mesh, sps and the cell objects
-Board.prototype.reset = function(){
+Box.prototype.reset = function(){
     for(var x = 0; x < this.cells.length; x++){  
         for(var y = 0; y < this.cells[x].length; y++){
             for(var z = 0; z < this.cells[x][y].length; z++){
-                this.cells[x][y] = null;    //Set to null so the GB can collect it
+                this.cells[x][y][z] = null;    //Set to null so the GB can collect it
             }
         } 
     }
-    this.sps.dispose();
-    this.sps = null;    //Set to null so the GB can collect it
+    if(this.sps != null){
+        this.sps.dispose();
+        this.sps = null;    //Set to null so the GB can collect it   
+    }
+    if(this.boundingBox != null)
+        this.boundingBox.dispose();
 }
 
 
 /*******************************/
 /***** Conway Algorithm *******/
 /*****************************/
-//As a ruleset the 4555 rule is used. It is by Carter Bay and described in more detail in : A New Candidate Rule for the Game of Three-Dimensional Life (1992)
+//I havent really found a very nice ruleset to not over crowd but also to not end up with all cells dead every time
 //This is called for every time a new round has be calculated
-Board.prototype.nextRound = function(){ 
+Box.prototype.nextRound = function(){ 
     var tmpCells = [];        
     var spsCounter = 0;                                                     //Needed to update the board in disrect time steps
     for(var x = 0; x < this.sizeX; x++){  
@@ -105,11 +117,17 @@ Board.prototype.nextRound = function(){
     if(this.sps != null)
         this.sps.dispose();     //Remove all mesh
         
+    if(spsCounter == 0){
+        this.frozen = true;
+        return;
+    }
+        
+        
     var cellObj;
     if(this.shape == "spheres")
-        cellObj = BABYLON.MeshBuilder.CreateSphere("SPS", { segments: 4 ,diameterX: 4,diameterY: 4, diameterZ: 4}, this.game.scene);
+        cellObj = BABYLON.MeshBuilder.CreateSphere("SPS", { segments: 4 ,diameterX: 5,diameterY: 5, diameterZ: 5}, this.game.scene);
     else
-        cellObj =  BABYLON.MeshBuilder.CreateBox("SPS", {size: 3.3}, this.game.scene);   
+        cellObj =  BABYLON.MeshBuilder.CreateBox("SPS", {size: 5}, this.game.scene);   
      
     this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene);    
     this.sps.addShape(cellObj, spsCounter);
@@ -117,6 +135,7 @@ Board.prototype.nextRound = function(){
     cellObj.dispose();
       
     //Update the actuall Cells
+    spsCounter = 0;
     var cellsChanging = false;      //Check if at least one cell has changed its state on the board
     for(var x = 0; x < this.sizeX; x++){  
         for(var y = 0; y < this.sizeY; y++){ 
@@ -142,7 +161,7 @@ Board.prototype.nextRound = function(){
 //Check how many living neighbours are cell has
 //@x : x-Index of the cell that is checked for living neighbours
 //@y : y-Index of the cell that is checked for living neighbours
-Board.prototype.countLivingNeighbours = function(x , y, z){
+Box.prototype.countLivingNeighbours = function(x , y, z){
     var countAlive = 0;
     
     //6 Center
@@ -187,7 +206,7 @@ Board.prototype.countLivingNeighbours = function(x , y, z){
 
 //Check if X-Value is too big and has to start at 0
 //@x : x-Index of Cells array that should be looked up if its valid
-Board.prototype.lookUpXHigh = function(x){
+Box.prototype.lookUpXHigh = function(x){
     if(x >= (this.sizeX))
         return 0;
     return x; 
@@ -195,7 +214,7 @@ Board.prototype.lookUpXHigh = function(x){
 
 //Check if X-Value is too small and has to start at 0
 //@x : x-Index of Cells array that should be looked up if its valid
-Board.prototype.lookUpXLow = function(x){
+Box.prototype.lookUpXLow = function(x){
     if(x < 0)
         return (this.sizeX - 1);
     return x; 
@@ -203,7 +222,7 @@ Board.prototype.lookUpXLow = function(x){
 
 //Check if Y-Value is too big and has to start at 0
 //@y : y-Index of Cells array that should be looked up if its valid
-Board.prototype.lookUpYHigh = function(y){
+Box.prototype.lookUpYHigh = function(y){
     if(y >= (this.sizeY)) 
         return 0;
     return y;
@@ -211,7 +230,7 @@ Board.prototype.lookUpYHigh = function(y){
 
 //Check if Y-Value is too small and has to start at 0
 //@y : y-Index of Cells array that should be looked up if its valid
-Board.prototype.lookUpYLow = function(y){
+Box.prototype.lookUpYLow = function(y){
     if(y < 0)
         return (this.sizeY - 1);
     return y;
@@ -219,7 +238,7 @@ Board.prototype.lookUpYLow = function(y){
 
 //Check if Z-Value is too big and has to start at 0
 //@y : z-Index of Cells array that should be looked up if its valid
-Board.prototype.lookUpZHigh = function(z){
+Box.prototype.lookUpZHigh = function(z){
     if(z >= (this.sizeZ)) 
         return 0;
     return z;
@@ -227,7 +246,7 @@ Board.prototype.lookUpZHigh = function(z){
 
 //Check if Z-Value is too small and has to start at 0
 //@y : z-Index of Cells array that should be looked up if its valid
-Board.prototype.lookUpZLow = function(z){
+Box.prototype.lookUpZLow = function(z){
     if(z < 0)
         return (this.sizeZ - 1);
     return z;

@@ -1,4 +1,5 @@
 /// <reference path="cell.js"/>
+/// <reference path="game.js"/>
 /**
  * This is where all the fun happens concerning the Conway algorithm. The Board class has all information needed determine cell states.
  * It stores board size, an array of a cell objects and the Solid Partical System to create the actuall mesh for the cells
@@ -69,8 +70,10 @@ Board.prototype.reset = function(){
             this.cells[x][y] = null;    //Set to null so the GB can collect it
         } 
     }
-    this.sps.dispose();
-    this.sps = null;    //Set to null so the GB can collect it
+    if(this.sps != null){
+        this.sps.dispose();
+        this.sps = null;    //Set to null so the GB can collect it   
+    }
 }
 
 //Called when user wants to select inital sate by himself, Creates event handelers for the the picking

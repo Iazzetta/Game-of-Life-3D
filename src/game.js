@@ -1,4 +1,5 @@
 /// <reference path="board.js"/>
+/// <reference path="box.js"/>
 /// <reference path="sounds.js"/>
 /**
  * Main Game Prototype, all the logic like pausing, restarting ... is located here
@@ -19,8 +20,10 @@ function Game(){
     this.timeInterval = timeInterval.getTimeInterval();      //Current setting of the time interval (how fast the game is playing the next round)
     this.roundCounter = 1;                                   //Keeps track of how many rounds have been simulated
     this.board = new Board(this);
+    this.box = new Box(this);
     this.sounds = new Sounds(this);
     this.paused = true;
+    this.gameMode = 1;                                      //Default game mode 1 : 2D-Game, 2 : 3D-Game
    
     
 	var _this = this;
@@ -74,9 +77,9 @@ Game.prototype.createCamera = function(){
 
 //Create Lights, maybe add another lightsource (like a directional light from below)
 Game.prototype.createLight = function(){
-    this.light = new BABYLON.HemisphericLight('lightHs',new BABYLON.Vector3(0, 1, 0), this.scene); 
+    this.light = new BABYLON.HemisphericLight('lightHs',new BABYLON.Vector3(0.2, 1, 0.2), this.scene); 
 	this.light.specular = new BABYLON.Color3(0.1, 0.1, 0.1);
-    this.light2 = new BABYLON.HemisphericLight('lightHs2',new BABYLON.Vector3(0, -1, 0), this.scene); 
+    this.light2 = new BABYLON.HemisphericLight('lightHs2',new BABYLON.Vector3(0.2, -1, 0.2), this.scene); 
 	this.light2.specular = new BABYLON.Color3(0.2, 0.2, 0.2);
     this.light2.intensity = 0.5;
 }
@@ -92,9 +95,13 @@ Game.prototype.startRenderLoop = function(){
             time = 0;
             $("#roundCounter span").html(_this.roundCounter);
             if(!_this.paused){
-                _this.board.nextRound();
+                if(_this.gameMode == 1)
+                    _this.board.nextRound();
+                else if(_this.gameMode == 2)
+                    _this.box.nextRound();
+                
                 _this.roundCounter++; 
-                if(!_this.board.frozen)
+                if(!_this.board.frozen && !_this.box.frozen)
                     _this.sounds.playRandomSound();              
             }
 
@@ -112,9 +119,10 @@ Game.prototype.startRenderLoop = function(){
 //@dist : distribution, random or by hand
 //@sizeX & sizeY : board size in x an y direction
 //@callback : Callback after loading the board (used to hide the loading info at the end)
-Game.prototype.begin = function(shape, dist, sizeX, sizeY, callback){
+Game.prototype.begin2D = function(shape, dist, sizeX, sizeY, callback){
     this.board.setSize(sizeX, sizeY);       
     this.board.createBoard(shape, dist, callback);
+    this.gameMode = 1;
     
     if(dist == "random"){
         this.paused = false;
@@ -123,6 +131,14 @@ Game.prototype.begin = function(shape, dist, sizeX, sizeY, callback){
     else{
         this.board.startSelection();
     } 
+}
+Game.prototype.begin3D = function(shape, sizeX, sizeY, sizeZ){
+    this.box.setSize(sizeX, sizeY, sizeZ);       
+    this.box.init(shape); 
+    this.gameMode = 2;
+
+    this.paused = false;
+    this.sounds.start();
 }
 
 //When user is done selecting inital cells, start the game
@@ -147,7 +163,9 @@ Game.prototype.restart = function(){
     this.paused = true;
     this.roundCounter = 1;
     this.board.reset();
+    this.box.reset();
     this.sounds.menu();
+    this.board.endSelection();
 }
 
 //Set new Time interval because user changed it

@@ -6,6 +6,10 @@
 
 var game;
 $(document).ready(function(){  
+    //If browser caches selection (2D / 3D) the wrong stuff might be visible
+    if($("#3d_option").prop("checked"))
+        $("#3d_option").trigger("click");
+        
 	sidemenu.init();       //Init Sidemenu object
     timeInterval.init();   //Init Time Interval object
 	game = new Game();     //Init Game
@@ -16,7 +20,7 @@ var fsm = StateMachine.create({
   
   events: [
     { name: 'restart',  from: ['Pause', 'Run', 'Chose'],  to: 'StartScreen' },
-    { name: 'startRandom', from: 'StartScreen', to: 'Run'    },
+    { name: 'startRunning', from: 'StartScreen', to: 'Run'    },
     { name: 'startChosing',  from: 'StartScreen',    to: 'Chose' },
     { name: 'doneChosing', from: 'Chose', to: 'Run'  },
     { name: 'pausing', from: 'Run', to: 'Pause'  },
@@ -37,13 +41,19 @@ var fsm = StateMachine.create({
         $("#is_loading").hide();
     },
     
-    onstartRandom:  function(event, from, to, msg) {
+    onstartRunning:  function(event, from, to, msg) {
         $("#is_loading").show();
         $("#start_screen").fadeOut(function(){
-            sidemenu.showToggler();
-            game.begin(msg.shape, "random", msg.sizeX, msg.sizeY, function(){
+            sidemenu.showToggler(); 
+            if(msg.gameMode == 1){
+                game.begin2D(msg.shape, "random", msg.sizeX, msg.sizeY, function(){
+                    $("#is_loading").hide();
+                });
+            }
+            else{
+                game.begin3D(msg.shape, msg.sizeX , msg.sizeY, msg.sizeZ);
                 $("#is_loading").hide();
-            });
+            }
         });
     },
     
@@ -52,7 +62,7 @@ var fsm = StateMachine.create({
         $("#start_screen").fadeOut(function(){
             $("#select_info").show();
             sidemenu.showToggler();
-            game.begin(msg.shape, "chosing", msg.sizeX, msg.sizeY, function(){
+            game.begin2D(msg.shape, "chosing", msg.sizeX, msg.sizeY, function(){
                 $("#is_loading").hide(); 
             });
         });
@@ -98,9 +108,12 @@ $("#restart_btn").click(function(){
 //Start the game from the start screen
 $("#begin_btn").click(function(){
     //Check if field size values are integers
-    var sizeX = parseInt($("#field_size_x").val() , 10); 
+    var sizeX = parseInt($("#field_size_x").val(), 10); 
     var sizeY = parseInt($("#field_size_y").val(), 10);
-    if(!(typeof sizeX ==='number' && (sizeX % 1) === 0) || !(typeof sizeY ==='number' && (sizeY % 1) === 0)) {
+    var sizeZ = parseInt($("#field_size_z").val(), 10);
+    if(!(typeof sizeX ==='number' && (sizeX % 1) === 0) || 
+       !(typeof sizeY ==='number' && (sizeY % 1) === 0) ||
+       !(typeof sizeZ ==='number' && (sizeZ % 1) === 0)) {
         alert("Field Size Values must be Integers!");
         return;
     }
@@ -109,10 +122,16 @@ $("#begin_btn").click(function(){
     if($("#box_option").prop("checked")) shape = "boxes";
     else shape = "spheres";
     
-    if($("#random_option").prop("checked"))
-        fsm.startRandom({sizeX, sizeY, shape});
+    var gameMode;
+    if($("#3d_option").prop("checked"))
+        gameMode = 2;
     else
-        fsm.startChosing({sizeX, sizeY, shape});
+        gameMode = 1;
+        
+    if($("#random_option").prop("checked") || gameMode == 2)
+        fsm.startRunning({sizeX, sizeY, sizeZ, shape, gameMode});
+    else
+        fsm.startChosing({sizeX, sizeY, sizeZ, shape});
    
 });
 
