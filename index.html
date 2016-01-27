@@ -87,10 +87,14 @@
             </label>
         </div>
         <div class="selects_wrapper">
-            <label class="field_size_label">Chose Field Size</label>
-            <input class="field_size_input" id="field_size_x" placeholder="X" value="40">
-            <span id="span_x">x</span>
-            <input class="field_size_input" id="field_size_y" placeholder="Y" value="40">
+            <div class="field_size_label">Chose Field Size</div>
+            <div id="input_wrapper_fieldsize">
+                <input class="field_size_input" id="field_size_x" placeholder="X" value="40">
+                <span class="span_x">x</span>
+                <input class="field_size_input" id="field_size_y" placeholder="Y" value="40">
+                <span class="span_x z_value_hide">x</span>
+                <input class="field_size_input z_value_hide" id="field_size_y" placeholder="Z" value="40">
+            </div>
         </div>
         <div class="selects_wrapper"> 
             <label class="select_info">Cells are represented by</label>
@@ -103,7 +107,7 @@
                 <span class="mdl-radio__label">Spheres</span>
             </label>
         </div>
-        <div class="selects_wrapper">
+        <div class="selects_wrapper" id="start_condition_wrapper">
             <label class="select_info">Select a Starting Condition</label>
             <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="chose_option">
                 <input type="radio" id="chose_option" class="mdl-radio__button" name="start_condition_options" value="2" checked>

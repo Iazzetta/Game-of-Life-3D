@@ -42,10 +42,6 @@ Board.prototype.createBoard = function(shape, dist, callback){
     this.sps.addShape(cellObj, this.sizeX * this.sizeY);
     this.sps.buildMesh();
     cellObj.dispose();  
-    var materialBC = new BABYLON.StandardMaterial("bc", this.game.scene);
-    materialBC.backFaceCulling = false;
-    this.sps.mesh.material = materialBC;
-    this.sps.mesh.hasVertexAlpha = true;
      
     var spsCounter = 0;
     for(var x = 0; x < this.sizeX; x++){  
@@ -56,7 +52,7 @@ Board.prototype.createBoard = function(shape, dist, callback){
                 state = Math.random() > 0.9 ? 1 : 0;
             else    
                 state = 0;
-            this.cells[x][y] = new Cell(this.game, (x-this.sizeX/2 + 0.5)*5 , (y-this.sizeY/2 + 0.5)*5, state, this.sps.particles[spsCounter]);
+            this.cells[x][y] = new Cell(this.game, (x-this.sizeX/2 + 0.5)*5 , (y-this.sizeY/2 + 0.5)*5, 0, state, this.sps.particles[spsCounter]);
             this.cells[x][y].init();  
             spsCounter++; 
         } 
@@ -69,8 +65,7 @@ Board.prototype.createBoard = function(shape, dist, callback){
 //Reset board, delete mesh, sps and the cell objects
 Board.prototype.reset = function(){
     for(var x = 0; x < this.cells.length; x++){  
-        var cellsY = this.cells[x];
-        for(var y = 0; y < cellsY.length; y++){
+        for(var y = 0; y < this.cells[x].length; y++){
             this.cells[x][y] = null;    //Set to null so the GB can collect it
         } 
     }
@@ -107,10 +102,15 @@ Board.prototype.startSelection = function(){
             var x = Math.floor(idx / _this.sizeX);
             var y = idx - (x * _this.sizeX); 
     
-            if(_this.cells[x][y].isAlive())
+            if(_this.cells[x][y].isAlive()){
                 _this.cells[x][y].setState(0);
-            else
+                _this.cells[x][y].updateColor();
+            } 
+            else{
                 _this.cells[x][y].setState(1);
+                _this.cells[x][y].updateColor();
+            }
+               
             _this.sps.setParticles();
         }
         else{
@@ -144,7 +144,7 @@ Board.prototype.nextRound = function(){
         for(var y = 0; y < this.sizeY; y++){                            //Loop through all the cells
             var living = this.cells[x][y].isAlive();                    //Ceck if the current cell is alive or dead
             var counter = this.countLivingNeighbours(x , y);            //Check how many living cells the current one has
-            var result = living;                                        //Store the result => dead or alive (0 or 1)
+            var result = living;                                        //Store original state in result => dead or alive (0 or 1)
             
             //All rules are applayed right here
             if(living && counter < 2 || counter > 3)                    //Rule: cell dies if there are more then 3 or less then 2 living neighbours
@@ -162,6 +162,7 @@ Board.prototype.nextRound = function(){
         for(var y = 0; y < this.sizeY; y++){ 
             if(this.cells[x][y].isAlive() != tmpCells[x][y]){
                  this.cells[x][y].setState(tmpCells[x][y]);
+                 this.cells[x][y].updateColor();
                  cellsChanging = true;
             }
         } 

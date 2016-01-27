@@ -188,6 +188,9 @@ html, body {
     color: white;
 }
 .selects_wrapper{
+    width: 100%;
+    float :left;
+    display: block;
     margin-bottom: 25px;
 }
 #game_paused, #select_info{
@@ -250,6 +253,17 @@ html, body {
     text-align: center;
     width: 99%;
 }
+#input_wrapper_fieldsize{
+    float:left;
+}
+.field_size_label{
+    float: left;
+    padding-top: 7px;
+    margin-bottom: 10px;
+}
+.z_value_hide{
+    visibility: hidden;
+}
 
 @media screen and (max-width: 700px) {
     #header_img{
@@ -264,7 +278,7 @@ html, body {
         left: 0px;
         max-width: 100%;
         overflow: auto;
-    }
+    } 
     #begin_btn{
         width: 90%;
         margin-left: 6%;
