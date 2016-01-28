@@ -132,7 +132,7 @@ Box.prototype.nextRound = function(){
     this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene);    
     this.sps.addShape(cellObj, spsCounter);
     this.sps.buildMesh();
-    if(shape == "boxes"){
+    if(this.shape == "boxes"){
         this.sps.mesh.material = new BABYLON.StandardMaterial("texture", this.game.scene);
         this.sps.mesh.material.diffuseTexture = new BABYLON.Texture("assets/images/box_texture.jpg", this.game.scene);
     }
