@@ -26,8 +26,8 @@ m = Sound on / off
 Enter = start game when on start screen 
 c = toggle camera arc / free
 
-(when free camera is used:)
-w = move forward
-a = move left
-d = move right
-s = move back  
+(when free camera is used)   
+w = move forward  
+a = move left   
+d = move right  
+s = move back   
