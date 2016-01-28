@@ -42,6 +42,10 @@ Board.prototype.createBoard = function(shape, dist, callback){
     this.sps = new BABYLON.SolidParticleSystem("SPS", this.game.scene, {isPickable: true});    
     this.sps.addShape(cellObj, this.sizeX * this.sizeY);
     this.sps.buildMesh();
+    if(shape == "boxes"){
+        this.sps.mesh.material = new BABYLON.StandardMaterial("texture", this.game.scene);
+        this.sps.mesh.material.diffuseTexture = new BABYLON.Texture("assets/images/box_texture.jpg", this.game.scene);
+    }
     cellObj.dispose();  
      
     var spsCounter = 0;
