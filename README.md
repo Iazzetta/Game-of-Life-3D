@@ -5,7 +5,7 @@ For more information about Babylon.js visit the offical site with lots of great 
 
 
 ## Running the Code
-A running version of the code can be found at http://185.82.21.82/gameoflife. But you can also run it on your device. Simply fire up the index.html file in any browser that supports webGL. 
+A running version of the code can be found at http://185.82.21.82/Game-of-Life-3D. But you can also run it on your device. Simply fire up the index.html file in any browser that supports webGL. 
 
 ## The Game & Controlls  
 At the start screen, you can chose 2D or 3D. Select a grid size and what kind of shape you would like the cells to be represented as. Depending on your device be careful with very large numbers 
